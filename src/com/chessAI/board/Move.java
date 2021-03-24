@@ -448,6 +448,7 @@ public abstract class Move {
             private MoveFactory(){
                 throw new RuntimeException("Not Possible");
             }
+
             public static Move createMove(final Board board, final int currentCoordinate, final int destinationCoordinate){
                 for(final Move move : board.getAllLegalMoves()){
                     if(move.getCurrentCoordinate() == currentCoordinate && move.getDestinationCoordinate() == destinationCoordinate){
@@ -456,5 +457,10 @@ public abstract class Move {
                 }
                 return NULL_MOVE;
             }
+
+            public static Move getNullMove(){
+                return NULL_MOVE;
+            }
+
     }
 }

@@ -80,18 +80,6 @@ public abstract class Player {
            }
     }
 
-   /* public boolean willBeThreeFold(Move move, Board board){
-            Board transitionBoard = new Board.Builder(
-        int numberOfTimes = Collections.frequency(Table.get().getBoardHistory().getBoardList(), board.toString());
-        if(numberOfTimes == 3){
-            System.out.println("THREEFOLD REPETITION - DRAW");
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    */
 
     protected boolean hasEscapeMoves() {
             for (final Move move : this.legalMoves){

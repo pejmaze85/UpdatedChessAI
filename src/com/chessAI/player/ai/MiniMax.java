@@ -4,10 +4,10 @@ import com.chessAI.board.Board;
 import com.chessAI.board.Move;
 import com.chessAI.gui.Table;
 import com.chessAI.player.MoveTransition;
-import com.chessAI.player.Player;
-
-import java.util.Collections;
+import com.chessAI.board.BoardFunctions;
 import java.util.concurrent.TimeUnit;
+
+import static com.chessAI.board.BoardFunctions.willResultInDraw;
 
 public class MiniMax implements MoveStrategy{
 
@@ -39,20 +39,7 @@ public class MiniMax implements MoveStrategy{
             }
         }
 
-
-
         return bestMove;
-    }
-
-    public boolean willResultInDraw(Move move){
-        Board testBoard = Table.get().getGameBoard().currentPlayer().makeMove(move).getTransistionBoard();
-        int numberOfTimes = Collections.frequency(Table.get().getBoardHistory().getBoardList(), testBoard.toString());
-        if(numberOfTimes == 2){
-            System.out.println("THREEFOLD REPETITION - DRAW");
-            return true;
-        }else{
-            return false;
-        }
     }
 
     public Move getBestMiniMaxMove(Board board, boolean best){
@@ -151,7 +138,6 @@ public class MiniMax implements MoveStrategy{
     }
 
     private boolean endGame(Board board) {
-
         return board.currentPlayer().isInCheckMate() || board.currentPlayer().isInStaleMate() || board.currentPlayer().isThreeFold() ;
     }
 

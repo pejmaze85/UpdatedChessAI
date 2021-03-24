@@ -81,6 +81,11 @@ public class BoardUtils {
                 piece.getPieceAlliance() != king.getPieceAlliance();
     }
 
+    public static boolean isEndGame(final Board board) {
+        return board.currentPlayer().isInCheckMate() ||
+                board.currentPlayer().isInStaleMate();
+    }
+
     private BoardUtils(){
 
         throw new RuntimeException("NOPE");
