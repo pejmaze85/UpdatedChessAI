@@ -10,7 +10,7 @@ import com.chessAI.player.Player;
 
 public final class StandardBoardEvaluator implements BoardEvaluator {
 
-    private final static int CHECK_BONUS = 65;
+    private final static int CHECK_BONUS = 45;
     private final static int MOBILITY_MULTIPLIER = 5;
     private final static int CHECK_MATE_BONUS = 10000;
     private final static int DEPTH_BONUS = 100;
