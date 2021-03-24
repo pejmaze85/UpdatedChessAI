@@ -70,6 +70,11 @@ public class Queen extends Piece{
     }
 
     @Override
+    public int endGameBonus() {
+        return 0;
+    }
+
+    @Override
     public Queen movePiece(final Move move) {
         return new Queen(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate());
     }

@@ -70,19 +70,6 @@ public abstract class Player {
         return !this.isInCheck && !hasEscapeMoves();
     }
 
-   /* public boolean willResultInDraw(Move move){
-            Board testBoard = MoveTransition()
-        int numberOfTimes = Collections.frequency(Table.get().getBoardHistory().getBoardList(), testBoard.toString());
-        if(numberOfTimes == 2){
-            System.out.println("THREEFOLD REPETITION - DRAW");
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    */
-
     public boolean isThreeFold(){
             int numberOfTimes = Collections.frequency(Table.get().getBoardHistory().getBoardList(), board.toString());
            if(numberOfTimes == 3){

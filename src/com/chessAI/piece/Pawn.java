@@ -120,6 +120,11 @@ public class Pawn extends Piece {
     }
 
     @Override
+    public int endGameBonus() {
+        return 0;
+    }
+
+    @Override
     public Pawn movePiece(final Move move) {
         return new Pawn(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate());
     }

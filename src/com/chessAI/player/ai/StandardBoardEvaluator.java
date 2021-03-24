@@ -78,9 +78,11 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         GAMESTATE gameState = getGameState(board);
         for (final Piece piece : player.getActivePieces()) {
             pieceValuationScore += piece.getPieceValue();
-                    //if(gameState != GAMESTATE.ENDGAME){
+                    if(gameState != GAMESTATE.ENDGAME){
                         pieceValuationScore += piece.locationBonus();
-                    //}
+                    }else{
+                        pieceValuationScore += piece.endGameBonus();
+                    }
             if(piece.getPieceType() == Piece.PieceType.BISHOP) {
                 numBishops++;
             }

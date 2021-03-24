@@ -76,6 +76,8 @@ public abstract class Piece {
 
     public abstract int locationBonus();
 
+    public abstract int endGameBonus();
+
 
     public enum PieceType{
 

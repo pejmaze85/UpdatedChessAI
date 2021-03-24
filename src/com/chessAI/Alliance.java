@@ -73,6 +73,10 @@ public enum Alliance {
             return W_KING_BONUS_TILES[position];
         }
 
+        @Override
+        public  int endGameBonus(final int position) {return B_KING_BONUS_ENDGAME_TILES[position];}
+
+
     },
     BLACK {
         @Override
@@ -135,7 +139,14 @@ public enum Alliance {
         public int kingBonus(final int position) {
             return B_KING_BONUS_TILES[position];
         }
+
+        @Override
+        public  int endGameBonus(final int position) {return B_KING_BONUS_ENDGAME_TILES[position];}
+
+
     };
+
+    public abstract int endGameBonus(int piecePosition);
 
     public abstract int getDirection();
 
@@ -291,6 +302,17 @@ public enum Alliance {
             -30,-40,-40,-50,-50,-40,-40,-30,
             -30,-40,-40,-50,-50,-40,-40,-30,
             -30,-40,-40,-50,-50,-40,-40,-30
+    };
+
+    private final static int[] B_KING_BONUS_ENDGAME_TILES = {
+            -50,-40,-30,-30,-30,-30,-40,-50,
+            -40,-20,  0,  5,  5,  0,-20,-40,
+            -30,  5, 10, 15, 15, 10,  5,-30,
+            -30,  0, 15, 100, 100, 15,  0,-30,
+            -30,  5, 15, 100, 100, 15,  5,-30,
+            -30,  0, 10, 15, 15, 10,  0,-30,
+            -40,-20,  0,  0,  0,  0,-20,-40,
+            -50,-40,-30,-30,-30,-30,-40,-50,
     };
 
 }

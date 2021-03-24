@@ -63,6 +63,11 @@ public class Knight extends Piece{
     }
 
     @Override
+    public int endGameBonus() {
+        return 0;
+    }
+
+    @Override
     public Knight movePiece(final Move move) {
         return new Knight(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate());
     }

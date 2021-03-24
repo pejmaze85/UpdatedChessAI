@@ -59,6 +59,11 @@ public class Rook extends Piece{
     }
 
     @Override
+    public int endGameBonus() {
+        return 0;
+    }
+
+    @Override
     public Rook movePiece(final Move move) {
         return new Rook(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate());
     }

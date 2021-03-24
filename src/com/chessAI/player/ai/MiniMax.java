@@ -2,10 +2,11 @@ package com.chessAI.player.ai;
 
 import com.chessAI.board.Board;
 import com.chessAI.board.Move;
-import com.chessAI.gui.ScorePanel;
 import com.chessAI.gui.Table;
 import com.chessAI.player.MoveTransition;
+import com.chessAI.player.Player;
 
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 public class MiniMax implements MoveStrategy{
@@ -27,9 +28,9 @@ public class MiniMax implements MoveStrategy{
 
         Move bestMove = getBestMiniMaxMove(board, true);
 
-       /* if(willResultInDraw(bestMove)) {
+        if(willResultInDraw(bestMove)) {
             if (Table.get().getGameSetup().isAIPlayer(board.currentPlayer())) {
-                int OFFSET_TO_AVOID_DRAW = 600;
+                int OFFSET_TO_AVOID_DRAW = 1;
                 int selfScore = StandardBoardEvaluator.getScore(board, board.currentPlayer());
                 int opponentsScore = StandardBoardEvaluator.getScore(board, board.currentPlayer().getOpponent());
                 if ((selfScore + OFFSET_TO_AVOID_DRAW) > opponentsScore) {
@@ -38,16 +39,27 @@ public class MiniMax implements MoveStrategy{
             }
         }
 
-        */
+
 
         return bestMove;
+    }
+
+    public boolean willResultInDraw(Move move){
+        Board testBoard = Table.get().getGameBoard().currentPlayer().makeMove(move).getTransistionBoard();
+        int numberOfTimes = Collections.frequency(Table.get().getBoardHistory().getBoardList(), testBoard.toString());
+        if(numberOfTimes == 2){
+            System.out.println("THREEFOLD REPETITION - DRAW");
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public Move getBestMiniMaxMove(Board board, boolean best){
         final long startTime = System.currentTimeMillis();
 
         Move bestMove = null;
-        //Move secondBestMove = null;
+        Move secondBestMove = null;
 
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
@@ -68,12 +80,12 @@ public class MiniMax implements MoveStrategy{
 
                 if(board.currentPlayer().getAlliance().isWhite() && currentValue >= highestSeenValue){
                     highestSeenValue = currentValue;
-               //     secondBestMove = bestMove;
+                    secondBestMove = bestMove;
                     bestMove = move;
 
                 }else if (board.currentPlayer().getAlliance().isBlack() && currentValue <= lowestSeenValue){
                     lowestSeenValue = currentValue;
-              //      secondBestMove = bestMove;
+                    secondBestMove = bestMove;
                     bestMove = move;
                 }
             }
@@ -83,11 +95,13 @@ public class MiniMax implements MoveStrategy{
 
         System.out.println("Search Took " + TimeUnit.MILLISECONDS.toSeconds(executionTime) + " Seconds");
 
-      //  if(best || secondBestMove == null){
+        if(best || secondBestMove == null){
+            System.out.println(best);
             return bestMove;
-      //  }else if(!best){
-      //      return secondBestMove;
-      //  }
+        }else{
+            System.out.println(best);
+            return secondBestMove;
+        }
     }
 
     public int min(final Board board, final int depth, int alpha, int beta){

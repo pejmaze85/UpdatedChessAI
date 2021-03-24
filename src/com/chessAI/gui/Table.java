@@ -64,7 +64,7 @@ public class Table extends Observable {
 
     private Table(){
 
-        this.chessBoard = Board.createStandardBoard();
+        this.chessBoard = BoardVariations.createStandardBoard();
         JFrame gameFrame = new JFrame("PJChess");
         final JMenuBar tableMenuBar = createMenuBar();
         gameFrame.setJMenuBar(tableMenuBar);
@@ -164,7 +164,7 @@ public class Table extends Observable {
         return this.gameSetup;
     }
 
-    private Board getGameBoard(){
+    public Board getGameBoard(){
         return this.chessBoard;
     }
 
@@ -207,6 +207,7 @@ public class Table extends Observable {
 
         @Override
         protected Move doInBackground() {
+
             int depth = getDepth();
 
             final MoveStrategy miniMax = new MiniMax(depth);
@@ -248,7 +249,7 @@ public class Table extends Observable {
                 }else if(moveSize <= 15 ) {
                     depth = 6;
                 }else if(moveSize <= 8 ) {
-                    depth = 7;
+                    depth = 6;
                 }
             }else if(curState == GAMESTATE.MIDGAME) {
                 if(moveSize > 25 ) {
@@ -258,7 +259,7 @@ public class Table extends Observable {
                 }else if(moveSize <= 15 ) {
                     depth = 6;
                 }else if(moveSize <= 8 ) {
-                    depth = 7;
+                    depth = 6;
                 }
             }
             else if(curState == GAMESTATE.ENDGAME) {
