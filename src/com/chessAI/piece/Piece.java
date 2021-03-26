@@ -74,14 +74,16 @@ public abstract class Piece {
         return this.pieceType.getPieceValue();
     }
 
+    public int getPieceEndgameValue() { return this.pieceType.getPieceEndgameValue();}
+
     public abstract int locationBonus();
 
-    public abstract int endGameBonus();
+    public abstract int endgameLocationBonus();
 
 
     public enum PieceType{
 
-        PAWN("P", 100){
+        PAWN("P", 100, 250){
             @Override
             public boolean isKing() {
                 return false;
@@ -92,7 +94,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        KNIGHT("N", 300){
+        KNIGHT("N", 300, 350){
             @Override
             public boolean isKing() {
                 return false;
@@ -102,7 +104,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        BISHOP("B", 320){
+        BISHOP("B", 350, 460){
             @Override
             public boolean isKing() {
                 return false;
@@ -112,7 +114,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        ROOK("R", 500){
+        ROOK("R", 500, 600){
             @Override
             public boolean isKing() {
                 return false;
@@ -122,7 +124,7 @@ public abstract class Piece {
                 return true;
             }
         },
-        QUEEN("Q", 900){
+        QUEEN("Q", 900, 1300){
             @Override
             public boolean isKing() {
                 return false;
@@ -132,7 +134,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        KING("K", 10000){
+        KING("K", 10000, 10000){
             @Override
             public boolean isKing() {
                 return true;
@@ -145,10 +147,12 @@ public abstract class Piece {
 
         private String pieceName;
         private int pieceValue;
+        private int pieceEndgameValue;
 
-        PieceType(final String pieceName, final int value){
+        PieceType(final String pieceName, final int value, final int endgameValue){
             this.pieceValue = value;
             this.pieceName = pieceName;
+            this.pieceEndgameValue = endgameValue;
         }
 
         @Override
@@ -158,6 +162,9 @@ public abstract class Piece {
 
         public int getPieceValue(){
             return this.pieceValue;
+        }
+        public int getPieceEndgameValue(){
+            return this.pieceEndgameValue;
         }
         public abstract boolean isKing();
         public abstract boolean isRook();

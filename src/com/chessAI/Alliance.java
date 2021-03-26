@@ -49,6 +49,11 @@ public enum Alliance {
         }
 
         @Override
+        public int pawnEndgameBonus(final int position){
+            return W_PAWN_BONUS_ENDGAME_TILES[position];
+        }
+
+        @Override
         public int knightBonus(final int position) {
             return W_KNIGHT_BONUS_TILES[position];
         }
@@ -74,7 +79,7 @@ public enum Alliance {
         }
 
         @Override
-        public  int endGameBonus(final int position) {return B_KING_BONUS_ENDGAME_TILES[position];}
+        public  int kingEndgameBonus(final int position) {return B_KING_BONUS_ENDGAME_TILES[position];}
 
 
     },
@@ -116,6 +121,11 @@ public enum Alliance {
         }
 
         @Override
+        public int pawnEndgameBonus(final int position){
+            return B_PAWN_BONUS_ENDGAME_TILES[position];
+        }
+
+        @Override
         public int knightBonus(final int position) {
             return B_KNIGHT_BONUS_TILES[position];
         }
@@ -141,12 +151,14 @@ public enum Alliance {
         }
 
         @Override
-        public  int endGameBonus(final int position) {return B_KING_BONUS_ENDGAME_TILES[position];}
+        public  int kingEndgameBonus(final int position) {return B_KING_BONUS_ENDGAME_TILES[position];}
 
 
     };
 
-    public abstract int endGameBonus(int piecePosition);
+    public abstract int kingEndgameBonus(int piecePosition);
+
+    public abstract int pawnEndgameBonus(int piecePosition);
 
     public abstract int getDirection();
 
@@ -192,6 +204,28 @@ public enum Alliance {
             25, 25, 29, 29, 29, 29, 25, 25,
             75, 75, 75, 75, 75, 75, 75, 75,
             0,  0,  0,  0,  0,  0,  0,  0
+    };
+
+    private final static int[] W_PAWN_BONUS_ENDGAME_TILES = {
+            100,  100,  100,  100,  100,  100,  100,  100,
+            50, 50, 50,50,50, 50, 50,  50,
+            50, 50, 50,50,50, 50, 50,  50,
+            50, 50, 50,50,50, 50, 50,  50,
+            20,  20, 20, 20, 20, 20,  20,  20,
+            25, 25, 29, 29, 29, 29, 25, 25,
+            75, 75, 75, 75, 75, 75, 75, 75,
+            0,  0,  0,  0,  0,  0,  0,  0,
+    };
+
+    private final static int[] B_PAWN_BONUS_ENDGAME_TILES = {
+            0,  0,  0,  0,  0,  0,  0,  0,
+            75, 75, 75, 0, 0, 75, 75, 75,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            20,  20, 20, 20, 20, 20,  20,  20,
+            50,  50,  50, 50, 50,  50,  50,  50,
+            50, 50,50,  50,  50,50, 50,  50,
+            50, 50, 50,50,50, 50, 50,  50,
+            100,  100,  100,  100,  100,  100,  100,  100
     };
 
     private final static int[] W_KNIGHT_BONUS_TILES = {

@@ -120,8 +120,8 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public int endGameBonus() {
-        return 0;
+    public int endgameLocationBonus() {
+        return this.pieceAlliance.pawnEndgameBonus(this.piecePosition);
     }
 
     @Override

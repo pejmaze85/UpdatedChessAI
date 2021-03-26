@@ -257,18 +257,18 @@ public class Table extends Observable {
                 }else if(moveSize <= 25 ) {
                     depth = 5;
                 }else if(moveSize <= 15 ) {
-                    depth = 6;
+                    depth = 5;
                 }else if(moveSize <= 8 ) {
                     depth = 6;
                 }
             }
             else if(curState == GAMESTATE.ENDGAME) {
                 if(moveSize > 25 ) {
-                    depth = 4;
+                    depth = 5;
                 }else if(moveSize <= 25 ) {
                     depth = 5;
                 }else if(moveSize <= 15 ) {
-                    depth = 6;
+                    depth = 5;
                 }else if(moveSize <= 8 ) {
                     depth = 6;
                 }
@@ -300,8 +300,8 @@ public class Table extends Observable {
         setChanged();
         notifyObservers(playerType);
         moveCount ++;
-        int whiteScore = getScore(chessBoard, chessBoard.whitePlayer());
-        int blackScore = getScore(chessBoard, chessBoard.blackPlayer());
+        int whiteScore = getScore(chessBoard, chessBoard.whitePlayer(), GAMESTATE.UNSURE);
+        int blackScore = getScore(chessBoard, chessBoard.blackPlayer(), GAMESTATE.UNSURE);
         int totalScore = whiteScore + blackScore;
         double whitePercent = (double) whiteScore/ (double) totalScore;
         double blackPercent = (double)blackScore/ (double) totalScore;

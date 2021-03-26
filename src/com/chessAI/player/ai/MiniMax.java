@@ -31,8 +31,8 @@ public class MiniMax implements MoveStrategy{
         if(willResultInDraw(bestMove)) {
             if (Table.get().getGameSetup().isAIPlayer(board.currentPlayer())) {
                 int OFFSET_TO_AVOID_DRAW = 1;
-                int selfScore = StandardBoardEvaluator.getScore(board, board.currentPlayer());
-                int opponentsScore = StandardBoardEvaluator.getScore(board, board.currentPlayer().getOpponent());
+                int selfScore = StandardBoardEvaluator.getScore(board, board.currentPlayer(), StandardBoardEvaluator.GAMESTATE.UNSURE);
+                int opponentsScore = StandardBoardEvaluator.getScore(board, board.currentPlayer().getOpponent(), StandardBoardEvaluator.GAMESTATE.UNSURE);
                 if ((selfScore + OFFSET_TO_AVOID_DRAW) > opponentsScore) {
                     bestMove = getBestMiniMaxMove(board, false);
                 }

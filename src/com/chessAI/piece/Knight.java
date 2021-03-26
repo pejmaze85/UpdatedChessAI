@@ -63,7 +63,7 @@ public class Knight extends Piece{
     }
 
     @Override
-    public int endGameBonus() {
+    public int endgameLocationBonus() {
         return 0;
     }
 
