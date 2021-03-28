@@ -81,6 +81,8 @@ public abstract class Player {
     }
 
 
+
+
     protected boolean hasEscapeMoves() {
             for (final Move move : this.legalMoves){
                 final MoveTransition transition = makeMove(move);

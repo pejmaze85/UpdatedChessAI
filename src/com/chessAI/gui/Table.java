@@ -39,6 +39,9 @@ public class Table extends Observable {
     public Move lastMove;
 
     private Board chessBoard;
+    private Board lastChessBoard;
+    private Board secondLastChessboard;
+    private Board thirdLastChessboard;
 
     private Tile sourceTile;
     private Tile destinationTile;
@@ -77,6 +80,7 @@ public class Table extends Observable {
         this.moveLog = new MoveLog();
         this.boardHistoryLog = new BoardHistory();
         this.getBoardHistory().addToBoardList(this.chessBoard.toString());
+        this.getBoardHistory().addToMoveList(this.chessBoard);
         this.addObserver(new TableGameAIWatcher());
         this.boardDirection = BoardDirection.NORMAL;
 
@@ -109,6 +113,7 @@ public class Table extends Observable {
         final JMenuBar tableMenuBar = new JMenuBar();
         tableMenuBar.add(createFileMenu());
         tableMenuBar.add(createPreferencesMenu());
+        tableMenuBar.add(createPreferencesMenu());
         return tableMenuBar;
     }
 
@@ -132,6 +137,7 @@ public class Table extends Observable {
         final JMenuItem flipBoardMenuItem = new JMenuItem("Flip Board");
         final JMenuItem whiteComp = new JMenuItem("White Computer");
         final JMenuItem blackComp = new JMenuItem("Black Computer");
+        final JMenuItem undoMove = new JMenuItem("Undo Last Move");
         flipBoardMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -153,9 +159,22 @@ public class Table extends Observable {
                 setupUpdate(getGameSetup());
             }
         });
+        undoMove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(boardHistoryLog.getMoveList().size() != 0){
+                    boardHistoryLog.getMoveList().remove(boardHistoryLog.getMoveList().size() - 1);
+                    chessBoard = boardHistoryLog.getMoveList().get((boardHistoryLog.getMoveList().size() - 1));
+
+                    boardPanel.drawBoard(chessBoard);
+                    System.out.println("GOT HERE");
+                }
+            }
+        });
         preferencesMenu.add(flipBoardMenuItem);
         preferencesMenu.add(whiteComp);
         preferencesMenu.add(blackComp);
+        preferencesMenu.add(undoMove);
 
         return preferencesMenu;
     }
@@ -224,6 +243,7 @@ public class Table extends Observable {
                 Table.get().updateGameBoard(Table.get().getGameBoard().currentPlayer().makeMove(bestmove).getTransistionBoard());
                 Table.get().getMoveLog().addMove(bestmove);
                 Table.get().boardHistoryLog.addToBoardList(Table.get().getGameBoard().toString());
+                Table.get().boardHistoryLog.addToMoveList(Table.get().getGameBoard());
                 Table.get().getGameHistoryPanel().redo(Table.get().getGameBoard(), Table.get().getMoveLog());
                 Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
                 Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
@@ -362,6 +382,9 @@ public class Table extends Observable {
 
         public void drawBoard(Board board) {
                 removeAll();
+                thirdLastChessboard = secondLastChessboard;
+                secondLastChessboard = lastChessBoard;
+                lastChessBoard = board;
                 for (final TilePanel tilePanel : boardDirection.traverse(boardTiles)) {
                     tilePanel.drawTile(board);
                     add(tilePanel);
@@ -373,11 +396,17 @@ public class Table extends Observable {
 
     public static class BoardHistory {
         private final List<String> boardList;
+        private final List<Board> moveList;
 
-        BoardHistory(){ this.boardList = new ArrayList<>();}
+        BoardHistory(){
+            this.boardList = new ArrayList<>();
+            this.moveList = new ArrayList<>();
+        }
 
+        public List<Board> getMoveList() { return moveList; }
         public List<String> getBoardList() { return boardList;}
         public void addToBoardList(String newBoard){ this.boardList.add(newBoard.toString());}
+        public void addToMoveList(Board board){ this.moveList.add(board);}
 
     }
 
@@ -494,6 +523,7 @@ public class Table extends Observable {
                         if (transition.getMoveStatus().isDone()){
                             chessBoard = transition.getTransistionBoard();
                             Table.get().boardHistoryLog.addToBoardList(chessBoard.toString());
+                            Table.get().boardHistoryLog.addToMoveList(chessBoard);
                             moveLog.addMove(move);
 
                         }

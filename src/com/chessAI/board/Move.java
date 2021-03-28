@@ -103,6 +103,13 @@ public abstract class Move {
         return builder.build();
     }
 
+    public Board undo() {
+        final Board.Builder builder = new Builder();
+        this.board.getAllPieces().forEach(builder::setPiece);
+        builder.setMoveMaker(this.board.currentPlayer().getAlliance());
+        return builder.build();
+    }
+
     public static class MajorAttackMove extends AttackMove{
 
             public MajorAttackMove(final Board board, final Piece pieceMoved, final int destinationCoordinate, final Piece pieceAttacked){
@@ -220,6 +227,15 @@ public abstract class Move {
     public static final class PawnEnPassantAttack extends PawnAttackMove{
         public PawnEnPassantAttack(final Board board, final Piece movedPiece, final int destinationCoordinate, final Piece attackedPiece){
             super(board, movedPiece, destinationCoordinate, attackedPiece);
+        }
+
+        @Override
+        public Board undo() {
+            final Board.Builder builder = new Builder();
+            this.board.getAllPieces().forEach(builder::setPiece);
+            builder.setEnPassantPawn((Pawn)this.getAttackedPiece());
+            builder.setMoveMaker(this.board.currentPlayer().getAlliance());
+            return builder.build();
         }
 
         @Override
@@ -367,6 +383,7 @@ public abstract class Move {
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
             return builder.build();
         }
+
 
         @Override
         public int hashCode(){
