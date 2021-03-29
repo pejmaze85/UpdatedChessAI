@@ -74,6 +74,11 @@ public class Bishop extends Piece{
     }
 
     @Override
+    public boolean isPassedPawn() {
+        return false;
+    }
+
+    @Override
     public Bishop movePiece(final Move move) {
         return new Bishop(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate());
     }

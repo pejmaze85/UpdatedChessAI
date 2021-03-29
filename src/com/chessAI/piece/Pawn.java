@@ -7,13 +7,10 @@ import com.chessAI.board.Move;
 import com.chessAI.board.Move.PawnAttackMove;
 import com.chessAI.board.Move.PawnJump;
 import com.chessAI.board.Move.PawnMove;
-import com.chessAI.gui.GameHistoryPanel;
 import com.chessAI.gui.Table;
-import com.chessAI.gui.TakenPiecesPanel;
+import com.chessAI.player.Player;
 import com.google.common.collect.ImmutableList;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -138,5 +135,65 @@ public class Pawn extends Piece {
 
         return new Queen(this.pieceAlliance, this.piecePosition, false);
         // CHOSE PROMOTION PIECE
+    }
+
+    @Override
+    public boolean isPassedPawn(){
+
+        int pawnFile = this.getPieceFile();
+        int pawnRow = this.getPieceRow();
+        List<Piece> file = getPawnsInColumn(pawnFile, this.opponentAlliance);
+        List<Piece> fileMinusOne = getPawnsInColumn(pawnFile - 1, this.opponentAlliance);
+        List<Piece> filePlusOne = getPawnsInColumn(pawnFile + 1, this.opponentAlliance);
+        int fileCount = file.size();
+        int filePlusOneCount = filePlusOne.size();
+        int fileMinusOneCount = fileMinusOne.size();
+
+        if(fileCount > 0){ return false;}
+
+        if(fileCount == 0 && fileMinusOneCount == 0 && filePlusOneCount == 0){
+            System.out.println("NO OTHER PAWNS ON FILE OR SIDES");
+            return true;
+        }
+
+        if(fileCount == 0 && fileMinusOneCount == 0) {
+            for (Piece oppPawn : filePlusOne) {
+                int opponentRow = oppPawn.getPieceRow();
+                System.out.println(pawnRow);
+                System.out.println(opponentRow);
+
+                if (this.pieceAlliance == Alliance.WHITE) {
+                    if (pawnRow >= opponentRow) {
+                        return true;
+                    }
+                }
+                if (this.pieceAlliance == Alliance.BLACK) {
+                    if (pawnRow <= opponentRow) {
+                        System.out.println();
+                        return true;
+                    }
+                }
+            }
+        }
+        if(fileCount == 0 && filePlusOneCount == 0) {
+            for (Piece oppPawn : fileMinusOne) {
+                int opponentRow = oppPawn.getPieceRow();
+                System.out.println(pawnRow);
+                System.out.println(opponentRow);
+
+                if (this.pieceAlliance == Alliance.WHITE) {
+                    if (pawnRow >= opponentRow) {
+                        return true;
+                    }
+                }
+                if (this.pieceAlliance == Alliance.BLACK) {
+                    if (pawnRow <= opponentRow) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+
     }
 }

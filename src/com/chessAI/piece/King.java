@@ -94,6 +94,11 @@ public class King extends Piece {
     }
 
     @Override
+    public boolean isPassedPawn() {
+        return false;
+    }
+
+    @Override
     public King movePiece(final Move move) {
         return new King(this.pieceAlliance, move.getDestinationCoordinate(), false, move.isCastlingMove(), false, false);
     }

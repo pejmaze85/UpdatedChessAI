@@ -1,16 +1,25 @@
 package com.chessAI.board;
 
+import com.chessAI.Alliance;
+import com.chessAI.gui.Table;
 import com.chessAI.piece.King;
 import com.chessAI.piece.Piece;
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
+import com.chessAI.player.Player;
+import com.google.common.collect.ImmutableList;
 
 import java.util.*;
+
+import static com.chessAI.piece.Piece.*;
 
 public class BoardUtils {
 
 
     public static final boolean[] FIRST_COLUMN = initColumn(0);
     public static final boolean[] SECOND_COLUMN = initColumn(1);
+    public static final boolean[] THIRD_COLUMN = initColumn(2);
+    public static final boolean[] FOURTH_COLUMN = initColumn(3);
+    public static final boolean[] FIFTH_COLUMN = initColumn(4);
+    public static final boolean[] SIXTH_COLUMN = initColumn(5);
     public static final boolean[] SEVENTH_COLUMN = initColumn(6);
     public static final boolean[] EIGHTH_COLUMN = initColumn(7);
 
@@ -28,7 +37,6 @@ public class BoardUtils {
 
     public static final int START_TILE_INDEX = 0;
     public static final int NUM_TILES = 64;
-    public static final int NUM_TILE_PER_ROW = 8;
 
 
     private static boolean[] initColumn(int colNum){
@@ -77,13 +85,8 @@ public class BoardUtils {
                                          final int frontTile) {
         final Piece piece = board.getTile(frontTile).getPiece();
         return piece != null &&
-                piece.getPieceType() == Piece.PieceType.PAWN &&
+                piece.getPieceType() == PieceType.PAWN &&
                 piece.getPieceAlliance() != king.getPieceAlliance();
-    }
-
-    public static boolean isEndGame(final Board board) {
-        return board.currentPlayer().isInCheckMate() ||
-                board.currentPlayer().isInStaleMate();
     }
 
     private BoardUtils(){
@@ -91,12 +94,7 @@ public class BoardUtils {
         throw new RuntimeException("NOPE");
     }
     public static boolean isValidTileCoordinate(int coord) {
-        if (0 <= coord && coord < NUM_TILES){
-            return true;
-
-        }else {
-            return false;
-        }
+        return 0 <= coord && coord < NUM_TILES;
     }
 
     public static int getCoordinateAtPosition(final String position){
@@ -105,5 +103,17 @@ public class BoardUtils {
 
     public static String getPositionAtCoordinate(final int coordinate){
         return ALGEBRAIC_NOTATION.get(coordinate);
+    }
+
+    public static List<Piece> getPawnsInColumn(final int file, final Alliance alliance){
+        List<Piece> pawnsInCol = new ArrayList<>();
+        for(Piece piece: Table.get().getGameBoard().getAllPieces()){
+            if(piece.getPieceType() == PieceType.PAWN && piece.getPieceAlliance() == alliance){
+                if(piece.getPieceFile() == file){
+                    pawnsInCol.add(piece);
+                }
+            }
+        }
+        return ImmutableList.copyOf(pawnsInCol);
     }
 }

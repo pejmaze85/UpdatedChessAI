@@ -67,7 +67,7 @@ public class Table extends Observable {
 
     private Table(){
 
-        this.chessBoard = BoardVariations.createStandardBoard();
+        this.chessBoard = BoardVariations.testPassedPawn();
         JFrame gameFrame = new JFrame("PJChess");
         final JMenuBar tableMenuBar = createMenuBar();
         gameFrame.setJMenuBar(tableMenuBar);
@@ -112,7 +112,6 @@ public class Table extends Observable {
     private JMenuBar createMenuBar() {
         final JMenuBar tableMenuBar = new JMenuBar();
         tableMenuBar.add(createFileMenu());
-        tableMenuBar.add(createPreferencesMenu());
         tableMenuBar.add(createPreferencesMenu());
         return tableMenuBar;
     }

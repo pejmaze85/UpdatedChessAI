@@ -75,6 +75,11 @@ public class Queen extends Piece{
     }
 
     @Override
+    public boolean isPassedPawn() {
+        return false;
+    }
+
+    @Override
     public Queen movePiece(final Move move) {
         return new Queen(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate());
     }

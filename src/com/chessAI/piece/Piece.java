@@ -2,6 +2,7 @@ package com.chessAI.piece;
 
 import com.chessAI.Alliance;
 import com.chessAI.board.Board;
+import com.chessAI.board.BoardUtils;
 import com.chessAI.board.Move;
 
 import java.util.Collection;
@@ -10,6 +11,7 @@ public abstract class Piece {
     protected final PieceType pieceType;
     protected final int piecePosition;
     protected final Alliance pieceAlliance;
+    protected final Alliance opponentAlliance;
     protected final boolean isFirstMove;
     private final int cachedHashCode;
 
@@ -20,6 +22,7 @@ public abstract class Piece {
         this.piecePosition = piecePosition;
         this.cachedHashCode = computeHashCode();
         this.isFirstMove = isFirstMove;
+        if(pieceAlliance == Alliance.WHITE){ this.opponentAlliance = Alliance.BLACK;} else { this.opponentAlliance = Alliance.WHITE; }
 
     }
 
@@ -62,6 +65,62 @@ public abstract class Piece {
         return this.piecePosition;
     }
 
+    public int getPieceFile(){
+        if(BoardUtils.FIRST_COLUMN[this.getPiecePosition()]){
+            return 1;
+        }
+        if(BoardUtils.SECOND_COLUMN[this.getPiecePosition()]){
+            return 2;
+        }
+        if(BoardUtils.THIRD_COLUMN[this.getPiecePosition()]){
+            return 3;
+        }
+        if(BoardUtils.FOURTH_COLUMN[this.getPiecePosition()]){
+            return 4;
+        }
+        if(BoardUtils.FIFTH_COLUMN[this.getPiecePosition()]){
+            return 5;
+        }
+        if(BoardUtils.SIXTH_COLUMN[this.getPiecePosition()]){
+            return 6;
+        }
+        if(BoardUtils.SEVENTH_COLUMN[this.getPiecePosition()]){
+            return 7;
+        }
+        if(BoardUtils.EIGHTH_COLUMN[this.getPiecePosition()]){
+            return 8;
+        }
+            return 0;
+    }
+
+    public int getPieceRow(){
+        if(BoardUtils.FIRST_RANK[this.getPiecePosition()]){
+            return 1;
+        }
+        if(BoardUtils.SECOND_RANK[this.getPiecePosition()]){
+            return 2;
+        }
+        if(BoardUtils.THIRD_RANK[this.getPiecePosition()]){
+            return 3;
+        }
+        if(BoardUtils.FOURTH_RANK[this.getPiecePosition()]){
+            return 4;
+        }
+        if(BoardUtils.FIFTH_RANK[this.getPiecePosition()]){
+            return 5;
+        }
+        if(BoardUtils.SIXTH_RANK[this.getPiecePosition()]){
+            return 6;
+        }
+        if(BoardUtils.SEVENTH_RANK[this.getPiecePosition()]){
+            return 7;
+        }
+        if(BoardUtils.EIGHTH_RANK[this.getPiecePosition()]){
+            return 8;
+        }
+        return 0;
+    }
+
     public PieceType getPieceType(){
         return this.pieceType;
     }
@@ -79,6 +138,8 @@ public abstract class Piece {
     public abstract int locationBonus();
 
     public abstract int endgameLocationBonus();
+
+    public abstract boolean isPassedPawn();
 
 
     public enum PieceType{

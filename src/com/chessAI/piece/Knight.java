@@ -68,6 +68,11 @@ public class Knight extends Piece{
     }
 
     @Override
+    public boolean isPassedPawn() {
+        return false;
+    }
+
+    @Override
     public Knight movePiece(final Move move) {
         return new Knight(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate());
     }

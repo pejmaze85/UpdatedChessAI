@@ -64,6 +64,11 @@ public class Rook extends Piece{
     }
 
     @Override
+    public boolean isPassedPawn() {
+        return false;
+    }
+
+    @Override
     public Rook movePiece(final Move move) {
         return new Rook(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate());
     }

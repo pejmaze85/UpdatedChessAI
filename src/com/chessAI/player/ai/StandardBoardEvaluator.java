@@ -1,5 +1,6 @@
 package com.chessAI.player.ai;
 
+import com.chessAI.Alliance;
 import com.chessAI.board.Board;
 import com.chessAI.board.BoardUtils;
 import com.chessAI.board.Move;
@@ -18,9 +19,21 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     private static int PAWNPROMOTE_BONUS = 100;
     private final static int TWO_BISHOP_BONUS = 25;
     private final static int ATTACK_MULTIPLIER = 1;
+    private final static int PASSED_PAWN_BONUS = 300;
 
     public enum GAMESTATE{OPENING, MIDGAME, ENDGAME, UNSURE}
 
+    private static int scorePlayer(final Board board, final Player player, final int depth, GAMESTATE gameState) {
+
+        return pieceValueAndTileScore(player, board, gameState)
+                + kingThreats(player, depth)
+                + attacks(player, gameState)
+                + mobility(player)
+                + castled(player)
+                + checkmate(player, 4)
+                + pawnStructure(player);
+
+    }
 
     @Override
     public int evaluate(final Board board, final int depth) {
@@ -46,19 +59,6 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         return GAMESTATE.UNSURE;
 
     }
-
-    private static int scorePlayer(final Board board, final Player player, final int depth, GAMESTATE gameState) {
-
-        return pieceValueAndTileScore(player, board, gameState)
-        + kingThreats(player, depth)
-        + attacks(player, gameState)
-        + mobility(player)
-        + castled(player)
-        + checkmate(player, 4)
-        + pawnStructure(player);
-
-    }
-
 
     private static int attacks(final Player player, final GAMESTATE gamestate) {
         int attackScore = 0;
@@ -102,27 +102,30 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
                 if((BoardUtils.EIGHTH_RANK[piece.getPiecePosition()] || BoardUtils.FIRST_RANK[piece.getPiecePosition()]) && (player.calculateAttacksOnTile(piece.getPiecePosition(), player.getOpponent().getLegalMoves()).isEmpty())){
                     pieceValuationScore = pieceValuationScore + bonus + PAWNPROMOTE_BONUS;
                 }
+                if (piece.isPassedPawn()) {
+                    pieceValuationScore = pieceValuationScore + (PASSED_PAWN_BONUS);
+                    if (piece.getPieceAlliance() == Alliance.WHITE) {
+                        if (piece.getPieceRow() == 7) {
+                            pieceValuationScore += 300;
+                        }
+                        if (piece.getPieceRow() == 7) {
+                            pieceValuationScore += 500;
+                        }
+                    }
+                    if (piece.getPieceAlliance() == Alliance.WHITE) {
+                        if (piece.getPieceRow() == 2) {
+                            pieceValuationScore += 300;
+                        }
+                        if (piece.getPieceRow() == 2) {
+                            pieceValuationScore += 500;
+                        }
+                    }
+                }
             }
         }
         return pieceValuationScore + (numBishops == 2 ? TWO_BISHOP_BONUS : 0);
     }
 
-
-/*    private static int pawnPromoteBonus(Player player, Board board) {
-        if(getGameState(board) == GAMESTATE.ENDGAME) {
-            PAWNPROMOTE_BONUS = 600;
-        }
-        int bonus = 0;
-        for(Piece piece : player.getActivePieces()){
-            if(piece.getPieceType() == Piece.PieceType.PAWN){
-                if((BoardUtils.EIGHTH_RANK[piece.getPiecePosition()] || BoardUtils.FIRST_RANK[piece.getPiecePosition()]) && (player.calculateAttacksOnTile(piece.getPiecePosition(), player.getOpponent().getLegalMoves()).isEmpty())){
-                    bonus = bonus + PAWNPROMOTE_BONUS;
-                }
-            }
-        }
-        return bonus;
-    }
-*/
     private static int castled(Player player) {
         return player.getPlayerKing().isCastled() ? CASTLE_BONUS : 0;
     }
