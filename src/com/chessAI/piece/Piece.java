@@ -144,7 +144,7 @@ public abstract class Piece {
 
     public enum PieceType{
 
-        PAWN("P", 100, 250){
+        PAWN("P", 100, 150){
             @Override
             public boolean isKing() {
                 return false;
@@ -155,7 +155,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        KNIGHT("N", 300, 350){
+        KNIGHT("N", 300, 300){
             @Override
             public boolean isKing() {
                 return false;
@@ -165,7 +165,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        BISHOP("B", 350, 460){
+        BISHOP("B", 350, 400){
             @Override
             public boolean isKing() {
                 return false;

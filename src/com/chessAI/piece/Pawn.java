@@ -152,15 +152,12 @@ public class Pawn extends Piece {
         if(fileCount > 0){ return false;}
 
         if(fileCount == 0 && fileMinusOneCount == 0 && filePlusOneCount == 0){
-            System.out.println("NO OTHER PAWNS ON FILE OR SIDES");
             return true;
         }
 
         if(fileCount == 0 && fileMinusOneCount == 0) {
             for (Piece oppPawn : filePlusOne) {
                 int opponentRow = oppPawn.getPieceRow();
-                System.out.println(pawnRow);
-                System.out.println(opponentRow);
 
                 if (this.pieceAlliance == Alliance.WHITE) {
                     if (pawnRow >= opponentRow) {
@@ -169,7 +166,6 @@ public class Pawn extends Piece {
                 }
                 if (this.pieceAlliance == Alliance.BLACK) {
                     if (pawnRow <= opponentRow) {
-                        System.out.println();
                         return true;
                     }
                 }
@@ -178,8 +174,6 @@ public class Pawn extends Piece {
         if(fileCount == 0 && filePlusOneCount == 0) {
             for (Piece oppPawn : fileMinusOne) {
                 int opponentRow = oppPawn.getPieceRow();
-                System.out.println(pawnRow);
-                System.out.println(opponentRow);
 
                 if (this.pieceAlliance == Alliance.WHITE) {
                     if (pawnRow >= opponentRow) {

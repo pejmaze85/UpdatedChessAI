@@ -6,6 +6,7 @@ import com.chessAI.piece.Piece;
 import com.chessAI.player.MoveTransition;
 import com.chessAI.player.ai.MiniMax;
 import com.chessAI.player.ai.MoveStrategy;
+import com.chessAI.player.ai.StandardBoardEvaluator;
 import com.google.common.collect.Lists;
 
 import javax.swing.*;
@@ -35,13 +36,11 @@ public class Table extends Observable {
     private final MoveLog moveLog;
     private final BoardHistory boardHistoryLog;
     private final GameSetup gameSetup;
+    public final DebugWindow debugWindow;
 
     public Move lastMove;
 
     private Board chessBoard;
-    private Board lastChessBoard;
-    private Board secondLastChessboard;
-    private Board thirdLastChessboard;
 
     private Tile sourceTile;
     private Tile destinationTile;
@@ -67,7 +66,8 @@ public class Table extends Observable {
 
     private Table(){
 
-        this.chessBoard = BoardVariations.testPassedPawn();
+        this.debugWindow = new DebugWindow();
+        this.chessBoard = BoardVariations.createStandardBoard();
         JFrame gameFrame = new JFrame("PJChess");
         final JMenuBar tableMenuBar = createMenuBar();
         gameFrame.setJMenuBar(tableMenuBar);
@@ -106,6 +106,7 @@ public class Table extends Observable {
             Table.get().getGameHistoryPanel().redo(chessBoard, Table.get().getMoveLog());
             Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
             Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
+            StandardBoardEvaluator.debugScorePlayer(this.chessBoard);
 
     }
 
@@ -166,7 +167,7 @@ public class Table extends Observable {
                     chessBoard = boardHistoryLog.getMoveList().get((boardHistoryLog.getMoveList().size() - 1));
 
                     boardPanel.drawBoard(chessBoard);
-                    System.out.println("GOT HERE");
+
                 }
             }
         });
@@ -229,8 +230,7 @@ public class Table extends Observable {
             int depth = getDepth();
 
             final MoveStrategy miniMax = new MiniMax(depth);
-            final Move bestMove = miniMax.execute(Table.get().getGameBoard());
-            return bestMove;
+            return miniMax.execute(Table.get().getGameBoard());
         }
 
         @Override
@@ -246,11 +246,10 @@ public class Table extends Observable {
                 Table.get().getGameHistoryPanel().redo(Table.get().getGameBoard(), Table.get().getMoveLog());
                 Table.get().getTakenPiecesPanel().redo(Table.get().getMoveLog());
                 Table.get().getBoardPanel().drawBoard(Table.get().getGameBoard());
+                StandardBoardEvaluator.debugScorePlayer(Table.get().getGameBoard());
                 Table.get().moveMadeUpdate(PlayerType.COMPUTER);
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }
@@ -333,7 +332,6 @@ public class Table extends Observable {
 
     private void updateGameBoard(final Board transistionBoard) {
         this.chessBoard = transistionBoard;
-
     }
 
     public enum BoardDirection{
@@ -381,9 +379,6 @@ public class Table extends Observable {
 
         public void drawBoard(Board board) {
                 removeAll();
-                thirdLastChessboard = secondLastChessboard;
-                secondLastChessboard = lastChessBoard;
-                lastChessBoard = board;
                 for (final TilePanel tilePanel : boardDirection.traverse(boardTiles)) {
                     tilePanel.drawTile(board);
                     add(tilePanel);
@@ -404,8 +399,11 @@ public class Table extends Observable {
 
         public List<Board> getMoveList() { return moveList; }
         public List<String> getBoardList() { return boardList;}
-        public void addToBoardList(String newBoard){ this.boardList.add(newBoard.toString());}
-        public void addToMoveList(Board board){ this.moveList.add(board);}
+        public void addToBoardList(String newBoard){ this.boardList.add(newBoard);}
+
+        public void addToMoveList(Board board){
+            this.moveList.add(board);
+        }
 
     }
 
@@ -442,7 +440,6 @@ public class Table extends Observable {
     private class TilePanel extends JPanel{
 
         private final int tileId;
-        private Board board;
 
         TilePanel(final BoardPanel boardPanel, final int tileId){
             super(new GridBagLayout());
@@ -523,6 +520,7 @@ public class Table extends Observable {
                             chessBoard = transition.getTransistionBoard();
                             Table.get().boardHistoryLog.addToBoardList(chessBoard.toString());
                             Table.get().boardHistoryLog.addToMoveList(chessBoard);
+                            StandardBoardEvaluator.debugScorePlayer(chessBoard);
                             moveLog.addMove(move);
 
                         }
@@ -558,8 +556,8 @@ public class Table extends Observable {
             assignTileColor();
             assignTilePieceIcon(board);
             highlightLegals(chessBoard);
-            highlightLastMove(chessBoard);
-            highlightThreeFold(chessBoard);
+            highlightLastMove();
+            highlightThreeFold();
             validate();
             repaint();
         }
@@ -584,7 +582,7 @@ public class Table extends Observable {
 
         }
 
-        private void highlightLastMove(final Board board) {
+        private void highlightLastMove() {
             if (lastMove != null) {
                 if(tileId == lastMove.getDestinationCoordinate()) {
                         if (BoardUtils.EIGHTH_RANK[lastMove.getDestinationCoordinate()] ||
@@ -615,7 +613,7 @@ public class Table extends Observable {
             }
         }
 
-        private void highlightThreeFold(final Board board) {
+        private void highlightThreeFold() {
             if(Table.get().getGameBoard().currentPlayer().isThreeFold()) {
                 if (lastMove != null) {
                     if (tileId == lastMove.getDestinationCoordinate()) {

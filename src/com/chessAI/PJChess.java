@@ -8,6 +8,11 @@ import javafx.scene.control.Tab;
 public class PJChess {
     public static void main (String args[]){
 
+        Board board;
+        board = BoardVariations.testPassedPawn();
+
+        System.out.println(board);
+
         Table.get().show();
     }
 }

@@ -44,9 +44,7 @@ public enum Alliance {
         }
 
         @Override
-        public int pawnBonus(final int position) {
-            return W_PAWN_BONUS_TILES[position];
-        }
+        public int pawnBonus(final int position) { return W_PAWN_BONUS_TILES[position]; }
 
         @Override
         public int pawnEndgameBonus(final int position){
@@ -110,10 +108,7 @@ public enum Alliance {
         }
 
         @Override
-        public Player choosePlayer(final WhitePlayer whitePlayer, final BlackPlayer blackPlayer) {
-
-            return blackPlayer;
-        }
+        public Player choosePlayer(final WhitePlayer whitePlayer, final BlackPlayer blackPlayer) { return blackPlayer;}
 
         @Override
         public int pawnBonus(final int position) {
@@ -126,9 +121,7 @@ public enum Alliance {
         }
 
         @Override
-        public int knightBonus(final int position) {
-            return B_KNIGHT_BONUS_TILES[position];
-        }
+        public int knightBonus(final int position) { return B_KNIGHT_BONUS_TILES[position]; }
 
         @Override
         public int bishopBonus(final int position) {
@@ -186,9 +179,9 @@ public enum Alliance {
 
     private final static int[] W_PAWN_BONUS_TILES = {
             0,  0,  0,  0,  0,  0,  0,  0,
-            75, 75, 75, 75, 75, 75, 75, 75,
+            35, 35, 35, 35, 35, 35, 35, 35,
             25, 25, 29, 29, 29, 29, 25, 25,
-            5,  5, 10, 55, 55, 10,  5,  5,
+            5,  5, 20, 55, 55, 20,  5,  5,
             0,  0,  0, 40, 40,  0,  0,  0,
             5, -5,-10,  0,  0,-10, -5,  5,
             5, 10, 10,-20,-20, 10, 10,  5,
@@ -200,9 +193,9 @@ public enum Alliance {
             5, 10, 10,-20,-20, 10, 10,  5,
             5, -5,-10,  0,  0,-10, -5,  5,
             0,  0,  0, 40, 40,  0,  0,  0,
-            5,  5, 10, 55, 55, 10,  5,  5,
+            5,  5, 20, 55, 55, 20,  5,  5,
             25, 25, 29, 29, 29, 29, 25, 25,
-            75, 75, 75, 75, 75, 75, 75, 75,
+            35, 35, 35, 35, 35, 35, 35, 35,
             0,  0,  0,  0,  0,  0,  0,  0
     };
 
@@ -302,7 +295,7 @@ public enum Alliance {
             0,  0,  5,  5,  5,  5,  0, -5,
             -10,  5,  5,  5,  5,  5,  0,-10,
             -10,  0,  5,  0,  0,  0,  0,-10,
-            -20,-10,-10, -5, -5,-10,-10,-20
+            -20,-10,-10, 0, 0,-10,-10,-20
     };
 
     private final static int[] B_QUEEN_BONUS_TILES = {
@@ -313,7 +306,7 @@ public enum Alliance {
             0,  0,  5,  5,  5,  5,  0, -5,
             -10,  0,  5,  5,  5,  5,  0,-10,
             -10,  0,  0,  0,  0,  0,  0,-10,
-            -20,-10,-10, 0, 0,-10,-10,-20
+            -20,-10,-10, -5, -5,-10,-10,-20
     };
 
     private final static int[] W_KING_BONUS_TILES = {

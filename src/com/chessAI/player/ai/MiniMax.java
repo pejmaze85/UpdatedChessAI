@@ -4,7 +4,6 @@ import com.chessAI.board.Board;
 import com.chessAI.board.Move;
 import com.chessAI.gui.Table;
 import com.chessAI.player.MoveTransition;
-import com.chessAI.board.BoardFunctions;
 import java.util.concurrent.TimeUnit;
 
 import static com.chessAI.board.BoardFunctions.willResultInDraw;
@@ -83,10 +82,8 @@ public class MiniMax implements MoveStrategy{
         System.out.println("Search Took " + TimeUnit.MILLISECONDS.toSeconds(executionTime) + " Seconds");
 
         if(best || secondBestMove == null){
-            System.out.println(best);
             return bestMove;
         }else{
-            System.out.println(best);
             return secondBestMove;
         }
     }
