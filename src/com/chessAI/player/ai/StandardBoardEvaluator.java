@@ -16,6 +16,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     private final static int CHECK_MATE_BONUS = 10000;
     private final static int DEPTH_BONUS = 100;
     private final static int CASTLE_BONUS = 60;
+    private static final int ACTIVE_PIECE_BONUS = 2;
     private static int PAWNPROMOTE_BONUS = 100;
     private final static int TWO_BISHOP_BONUS = 25;
     private final static int ATTACK_MULTIPLIER = 2;
@@ -28,35 +29,36 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         Table.get().debugWindow.addToText("Piece Value = " + pieceValueScore(board.whitePlayer(), board, getGameState(board)) + "\n");
         Table.get().debugWindow.addToText("Piece Position = " + pieceTileScore(board.whitePlayer(), board, getGameState(board)) + "\n");
         Table.get().debugWindow.addToText("Pawn Bonus = " + pawnBonus(board.whitePlayer(), board) + "\n");
-        Table.get().debugWindow.addToText("King Threats = " + kingThreats(board.whitePlayer(), 4) + "\n");
+        Table.get().debugWindow.addToText("King Threats = " + kingThreats(board.whitePlayer()) + "\n");
         Table.get().debugWindow.addToText("Attacks = " + attacks(board.whitePlayer(), getGameState(board)) + "\n");
         Table.get().debugWindow.addToText("Mobility = " + mobility(board.whitePlayer()) + "\n");
+        Table.get().debugWindow.addToText("Active Piece Bonus = " + activatePieces(board.whitePlayer(), board) + "\n");
         Table.get().debugWindow.addToText("Castled = " + castled(board.whitePlayer()) + "\n");
         Table.get().debugWindow.addToText("Checkmate = " + checkmate(board.whitePlayer(), 4) + "\n");
-        Table.get().debugWindow.addToText("Pawn Structure = " + pawnStructure(board.whitePlayer()) + "\n");  ;
+        Table.get().debugWindow.addToText("Pawn Structure = " + pawnStructure(board.whitePlayer()) + "\n");
 
         Table.get().debugWindow.addToText("===================BLACK===================\n");
         Table.get().debugWindow.addToText("Piece Value = " + pieceValueScore(board.blackPlayer(), board, getGameState(board)) + "\n");
         Table.get().debugWindow.addToText("Piece Position = " + pieceTileScore(board.blackPlayer(), board, getGameState(board)) + "\n");
         Table.get().debugWindow.addToText("Pawn Bonus = " + pawnBonus(board.blackPlayer(), board) + "\n");
-        Table.get().debugWindow.addToText("King Threats = " + kingThreats(board.blackPlayer(), 4) + "\n");
+        Table.get().debugWindow.addToText("King Threats = " + kingThreats(board.blackPlayer()) + "\n");
         Table.get().debugWindow.addToText("Attacks = " + attacks(board.blackPlayer(), getGameState(board)) + "\n");
         Table.get().debugWindow.addToText("Mobility = " + mobility(board.blackPlayer()) + "\n");
+        Table.get().debugWindow.addToText("Active Piece Bonus = " + activatePieces(board.blackPlayer(), board) + "\n");
         Table.get().debugWindow.addToText("Castled = " + castled(board.blackPlayer()) + "\n");
         Table.get().debugWindow.addToText("Checkmate = " + checkmate(board.blackPlayer(), 4) + "\n");
-        Table.get().debugWindow.addToText("Pawn Structure = " + pawnStructure(board.blackPlayer()) + "\n");  ;
+        Table.get().debugWindow.addToText("Pawn Structure = " + pawnStructure(board.blackPlayer()) + "\n");
     }
 
     private static int scorePlayer(final Board board, final Player player, final int depth, GAMESTATE gameState) {
 
-        return     pieceValueScore(player, board, gameState)
-                + pieceTileScore(player, board, gameState)
-                + pawnBonus(player, board)
-                + kingThreats(player, depth)
+        return pieceAndTileScore(player, board, gameState)
+                + kingThreats(player)
                 + attacks(player, gameState)
                 + mobility(player)
+                //+ activatePieces(player, board)
                 + castled(player)
-                + checkmate(player, 4)
+                + checkmate(player, depth)
                 + pawnStructure(player);
 
     }
@@ -104,11 +106,63 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
                     attackScore++;
                 }
                 if(move.getAttackedPiece().getPieceType() == Piece.PieceType.QUEEN){
-                    attackScore += 5;
+                    attackScore += 20;
                 }
             }
         }
         return attackScore * ATTACK_MULTIPLIER;
+    }
+
+    private static int pieceAndTileScore(final Player player, final Board board, final GAMESTATE gamestate){
+        int pieceValuationScore = 0;
+        int numBishops = 0;
+        for (final Piece piece : player.getActivePieces()) {
+            if(gamestate == GAMESTATE.ENDGAME){
+                pieceValuationScore += piece.endgameLocationBonus();
+                pieceValuationScore += piece.getPieceEndgameValue();
+            }else{
+                pieceValuationScore += piece.locationBonus();
+                pieceValuationScore += piece.getPieceValue();
+            }
+
+            if(piece.getPieceType() == Piece.PieceType.PAWN){  // PAWN BONUS
+                int bonus = 0;
+                if(getGameState(board) == GAMESTATE.ENDGAME) {
+                    PAWNPROMOTE_BONUS = 200;
+                }
+                if((BoardUtils.EIGHTH_RANK[piece.getPiecePosition()] || BoardUtils.FIRST_RANK[piece.getPiecePosition()]) && (player.calculateAttacksOnTile(piece.getPiecePosition(), player.getOpponent().getLegalMoves()).isEmpty())){
+                    pieceValuationScore = pieceValuationScore + bonus + PAWNPROMOTE_BONUS;
+                }
+
+                if (piece.isPassedPawn()) {
+                    pieceValuationScore = pieceValuationScore + (PASSED_PAWN_BONUS);
+                    if (piece.isProtected(player, board)){
+                        pieceValuationScore += 100;
+                    }
+                    if (piece.getPieceAlliance() == Alliance.WHITE) {
+                        if (piece.getPieceRow() == 6) {
+                            pieceValuationScore += 50;
+                        }
+                        if (piece.getPieceRow() == 7) {
+                            pieceValuationScore += 100;
+                        }
+                    }
+                    if (piece.getPieceAlliance() == Alliance.BLACK) {
+                        if (piece.getPieceRow() == 3) {
+                            pieceValuationScore += 50;
+                        }
+                        if (piece.getPieceRow() == 2) {
+                            pieceValuationScore += 100;
+                        }
+                    }
+                }
+            }
+
+            if(piece.getPieceType() == Piece.PieceType.BISHOP) {
+                numBishops++;
+            }
+        }
+        return pieceValuationScore + (numBishops == 2 ? TWO_BISHOP_BONUS : 0);
     }
 
     private static int pieceValueScore(final Player player, final Board board, final GAMESTATE gamestate) {
@@ -142,7 +196,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
             if(piece.getPieceType() == Piece.PieceType.PAWN){  // PAWN BONUS
                 int bonus = 0;
                 if(getGameState(board) == GAMESTATE.ENDGAME) {
-                    PAWNPROMOTE_BONUS = 600;
+                    PAWNPROMOTE_BONUS = 200;
                 }
                 if((BoardUtils.EIGHTH_RANK[piece.getPiecePosition()] || BoardUtils.FIRST_RANK[piece.getPiecePosition()]) && (player.calculateAttacksOnTile(piece.getPiecePosition(), player.getOpponent().getLegalMoves()).isEmpty())){
                     score = score + bonus + PAWNPROMOTE_BONUS;
@@ -150,6 +204,10 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
 
                 if (piece.isPassedPawn()) {
                     score = score + (PASSED_PAWN_BONUS);
+                    if (piece.isProtected(player, board)){
+                        score += 100;
+                        System.out.println("PROTECTED");
+                    }
                     if (piece.getPieceAlliance() == Alliance.WHITE) {
                         if (piece.getPieceRow() == 6) {
                             score += 50;
@@ -192,9 +250,20 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         return PawnStructureAnalyzer.get().pawnStructureScore(player);
     }
 
-    private static int kingThreats(final Player player,
-                                   final int depth) {
-        return player.getOpponent().isInCheckMate() ? CHECK_MATE_BONUS  * depthBonus(depth) : check(player);
+    private static int kingThreats(final Player player) {
+        return player.getOpponent().isInCheckMate() ? CHECK_MATE_BONUS : check(player);
+    }
+
+    public static int activatePieces(Player player, Board board){
+        int activePieces = 0;
+        if(getGameState(board) == GAMESTATE.OPENING){
+            for (Piece piece : player.getActivePieces()){
+                if(piece.isFirstMove()){
+                    activePieces ++;
+                }
+            }
+        }
+        return activePieces * ACTIVE_PIECE_BONUS;
     }
 
     private static int mobility(final Player player) {
@@ -202,7 +271,14 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     }
 
     private static int mobilityRatio(final Player player) {
-        return (int)((player.getLegalMoves().size() * 10.0f) / player.getOpponent().getLegalMoves().size());
+        int moveCount = 0;
+        for (Move move: player.getLegalMoves()){
+            if (move.getMovePiece().getPieceType() != Piece.PieceType.PAWN){
+                moveCount ++;
+            }
+        }
+
+        return moveCount;
     }
 
 }

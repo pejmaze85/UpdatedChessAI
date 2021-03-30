@@ -27,7 +27,7 @@ public class MiniMax implements MoveStrategy{
 
         Move bestMove = getBestMiniMaxMove(board, true);
 
-        if(willResultInDraw(bestMove)) {
+       /* if(willResultInDraw(bestMove)) {
             if (Table.get().getGameSetup().isAIPlayer(board.currentPlayer())) {
                 int OFFSET_TO_AVOID_DRAW = 1;
                 int selfScore = StandardBoardEvaluator.getScore(board, board.currentPlayer(), StandardBoardEvaluator.GAMESTATE.UNSURE);
@@ -36,7 +36,7 @@ public class MiniMax implements MoveStrategy{
                     bestMove = getBestMiniMaxMove(board, false);
                 }
             }
-        }
+        } */
 
         return bestMove;
     }
@@ -45,7 +45,6 @@ public class MiniMax implements MoveStrategy{
         final long startTime = System.currentTimeMillis();
 
         Move bestMove = null;
-        Move secondBestMove = null;
 
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
@@ -66,12 +65,10 @@ public class MiniMax implements MoveStrategy{
 
                 if(board.currentPlayer().getAlliance().isWhite() && currentValue >= highestSeenValue){
                     highestSeenValue = currentValue;
-                    secondBestMove = bestMove;
                     bestMove = move;
 
                 }else if (board.currentPlayer().getAlliance().isBlack() && currentValue <= lowestSeenValue){
                     lowestSeenValue = currentValue;
-                    secondBestMove = bestMove;
                     bestMove = move;
                 }
             }
@@ -81,11 +78,8 @@ public class MiniMax implements MoveStrategy{
 
         System.out.println("Search Took " + TimeUnit.MILLISECONDS.toSeconds(executionTime) + " Seconds");
 
-        if(best || secondBestMove == null){
             return bestMove;
-        }else{
-            return secondBestMove;
-        }
+
     }
 
     public int min(final Board board, final int depth, int alpha, int beta){

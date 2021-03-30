@@ -62,6 +62,38 @@ public class BoardVariations {
         return builder.build();
     }
 
+    public static Board noahGameTest(){
+        final Board.Builder builder = new Board.Builder();
+        builder.setPiece(new Rook(Alliance.BLACK, 0));
+        builder.setPiece(new Knight(Alliance.BLACK, 17));
+        builder.setPiece(new Bishop(Alliance.BLACK, 20));
+        builder.setPiece(new Queen(Alliance.BLACK, 21));
+        builder.setPiece(new King(Alliance.BLACK, 6, false, true, false, false));
+        builder.setPiece(new Pawn(Alliance.BLACK, 8));
+        builder.setPiece(new Pawn(Alliance.BLACK, 13));
+        builder.setPiece(new Pawn(Alliance.BLACK, 12));
+        builder.setPiece(new Pawn(Alliance.BLACK, 18));
+        builder.setPiece(new Pawn(Alliance.BLACK, 19));
+        builder.setPiece(new Pawn(Alliance.BLACK, 22));
+        builder.setPiece(new Pawn(Alliance.BLACK, 23));
+        // WHITE
+        builder.setPiece(new Pawn(Alliance.WHITE, 48));
+        builder.setPiece(new Pawn(Alliance.WHITE, 50));
+        builder.setPiece(new Pawn(Alliance.WHITE, 36));
+        builder.setPiece(new Pawn(Alliance.WHITE, 37));
+        builder.setPiece(new Pawn(Alliance.WHITE, 54));
+        builder.setPiece(new Pawn(Alliance.WHITE, 47));
+        builder.setPiece(new Rook(Alliance.WHITE, 57));
+        builder.setPiece(new Knight(Alliance.WHITE, 52));
+        builder.setPiece(new Bishop(Alliance.WHITE, 43));
+        builder.setPiece(new Queen(Alliance.WHITE, 24));
+        builder.setPiece(new King(Alliance.WHITE, 62, false, true, false, false));
+
+        builder.setMoveMaker(Alliance.WHITE);
+
+        return builder.build();
+    }
+
     public static Board testPassedPawn(){
         final Board.Builder builder = new Board.Builder();
         builder.setPiece(new Rook(Alliance.BLACK, 0));

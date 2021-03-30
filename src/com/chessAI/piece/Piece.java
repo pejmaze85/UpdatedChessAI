@@ -4,6 +4,7 @@ import com.chessAI.Alliance;
 import com.chessAI.board.Board;
 import com.chessAI.board.BoardUtils;
 import com.chessAI.board.Move;
+import com.chessAI.player.Player;
 
 import java.util.Collection;
 
@@ -141,6 +142,8 @@ public abstract class Piece {
 
     public abstract boolean isPassedPawn();
 
+    public abstract boolean isProtected(Player player, Board board);
+
 
     public enum PieceType{
 
@@ -155,7 +158,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        KNIGHT("N", 300, 300){
+        KNIGHT("N", 305, 300){
             @Override
             public boolean isKing() {
                 return false;
@@ -165,7 +168,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        BISHOP("B", 350, 400){
+        BISHOP("B", 333, 400){
             @Override
             public boolean isKing() {
                 return false;
@@ -175,7 +178,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        ROOK("R", 500, 600){
+        ROOK("R", 563, 600){
             @Override
             public boolean isKing() {
                 return false;
@@ -185,7 +188,7 @@ public abstract class Piece {
                 return true;
             }
         },
-        QUEEN("Q", 900, 1300){
+        QUEEN("Q", 950, 1300){
             @Override
             public boolean isKing() {
                 return false;

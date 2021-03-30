@@ -6,6 +6,7 @@ import com.chessAI.board.BoardUtils;
 import com.chessAI.board.Move;
 import com.chessAI.board.Move.MajorAttackMove;
 import com.chessAI.board.Tile;
+import com.chessAI.player.Player;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -76,6 +77,11 @@ public class Queen extends Piece{
 
     @Override
     public boolean isPassedPawn() {
+        return false;
+    }
+
+    @Override
+    public boolean isProtected(Player player, Board board) {
         return false;
     }
 

@@ -22,7 +22,7 @@ public class TakenPiecesPanel extends JPanel {
     private final JPanel northPanel;
     private final JPanel southPanel;
     private static final Color PANEL_COLOR = Color.lightGray;
-    private static final Dimension TAKEN_PIECES_DIMENSION = new Dimension(40,80);
+    private static final Dimension TAKEN_PIECES_DIMENSION = new Dimension(60,80);
 
     public TakenPiecesPanel(){
         super(new BorderLayout());
@@ -31,8 +31,8 @@ public class TakenPiecesPanel extends JPanel {
         this.southPanel = new JPanel(new GridLayout(8,2));
         this.northPanel.setBackground(PANEL_COLOR);
         this.southPanel.setBackground(PANEL_COLOR);
-        add(this.northPanel, BorderLayout.NORTH);
-        add(this.southPanel, BorderLayout.SOUTH);
+        add(this.northPanel, BorderLayout.SOUTH);
+        add(this.southPanel, BorderLayout.NORTH);
         setPreferredSize(TAKEN_PIECES_DIMENSION);
     }
 

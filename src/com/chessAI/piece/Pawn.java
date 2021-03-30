@@ -2,12 +2,10 @@ package com.chessAI.piece;
 
 import com.chessAI.Alliance;
 import com.chessAI.board.Board;
-import com.chessAI.board.BoardUtils;
 import com.chessAI.board.Move;
 import com.chessAI.board.Move.PawnAttackMove;
 import com.chessAI.board.Move.PawnJump;
 import com.chessAI.board.Move.PawnMove;
-import com.chessAI.gui.Table;
 import com.chessAI.player.Player;
 import com.google.common.collect.ImmutableList;
 
@@ -135,6 +133,38 @@ public class Pawn extends Piece {
 
         return new Queen(this.pieceAlliance, this.piecePosition, false);
         // CHOSE PROMOTION PIECE
+    }
+
+    @Override
+    public boolean isProtected(Player player, Board board){
+        int col = this.getPieceFile();
+        int rookRow = 0;
+        int otherPieceRow = 0;
+        boolean rookOnFile = false;
+        boolean isProtected = true;
+        for(Piece piece : player.getActivePieces()){
+            if(piece.getPieceType() == PieceType.ROOK && piece.getPieceFile() == col){
+                rookOnFile = true;
+                rookRow = piece.getPieceRow();
+                break;
+            }
+        }
+
+        if(rookOnFile) {
+            for (Piece piece : board.getAllPieces()) {
+                if (piece.getPieceFile() == col && piece.getPieceRow() != this.getPieceRow() && piece.getPieceRow() != rookRow) {
+                    otherPieceRow = piece.getPieceRow();
+                    if( Math.abs((rookRow - otherPieceRow)) < Math.abs(rookRow - this.getPieceRow()) ) {
+                        isProtected = false;
+                        break;
+                    }
+                }
+                isProtected = true;
+            }
+        }else{
+            isProtected = false;
+        }
+        return isProtected;
     }
 
     @Override

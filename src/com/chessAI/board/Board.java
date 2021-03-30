@@ -82,8 +82,8 @@ public class Board {
     }
 
     public Collection<Piece> getAllPieces() {
-        return Stream.concat(this.whitePieces.stream(),
-                this.blackPieces.stream()).collect(Collectors.toList());
+        return Stream.concat(this.whitePlayer.getActivePieces().stream(),
+                this.blackPlayer.getActivePieces().stream()).collect(Collectors.toList());
     }
 
     private Collection<Move> calculateLegalMoves(Collection<Piece> pieces) {
