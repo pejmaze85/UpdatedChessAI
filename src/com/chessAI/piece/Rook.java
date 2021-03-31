@@ -55,13 +55,18 @@ public class Rook extends Piece{
     }
 
     @Override
-    public int locationBonus() {
+    public int getOGLocationBonus() {
         return this.pieceAlliance.rookBonus(this.piecePosition);
     }
 
     @Override
-    public int endgameLocationBonus() {
-        return 0;
+    public int getMGLocationBonus()  {
+        return this.pieceAlliance.rookBonus(this.piecePosition);
+    }
+
+    @Override
+    public int getEGLocationBonus() {
+        return this.pieceAlliance.rookBonus(this.piecePosition);
     }
 
     @Override
@@ -76,7 +81,7 @@ public class Rook extends Piece{
 
     @Override
     public Rook movePiece(final Move move) {
-        return new Rook(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate());
+        return new Rook(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate(), false);
     }
 
     @Override

@@ -38,12 +38,12 @@ public class BoardUtils {
     public static final int NUM_TILES = 64;
 
 
-    private static boolean[] initColumn(int colNum){
+    private static boolean[] initColumn(int colNum) {
         final boolean[] column = new boolean[NUM_TILES];
         do {
             column[colNum] = true;
             colNum += 8;
-        }while(colNum < 64);
+        } while (colNum < 64);
         return column;
     }
 
@@ -88,31 +88,44 @@ public class BoardUtils {
                 piece.getPieceAlliance() != king.getPieceAlliance();
     }
 
-    private BoardUtils(){
+    private BoardUtils() {
 
         throw new RuntimeException("NOPE");
     }
+
     public static boolean isValidTileCoordinate(int coord) {
         return 0 <= coord && coord < NUM_TILES;
     }
 
-    public static int getCoordinateAtPosition(final String position){
+    public static int getCoordinateAtPosition(final String position) {
         return POSITION_TO_COORDINATE.get(position);
     }
 
-    public static String getPositionAtCoordinate(final int coordinate){
+    public static String getPositionAtCoordinate(final int coordinate) {
         return ALGEBRAIC_NOTATION.get(coordinate);
     }
 
-    public static List<Piece> getPawnsInColumn(final int file, final Alliance alliance){
+    public static List<Piece> getPawnsInColumn(final int file, final Alliance alliance) {
         List<Piece> pawnsInCol = new ArrayList<>();
-        for(Piece piece: Table.get().getGameBoard().getAllPieces()){
-            if(piece.getPieceType() == PieceType.PAWN && piece.getPieceAlliance() == alliance){
-                if(piece.getPieceFile() == file){
+        for (Piece piece : Table.get().getGameBoard().getAllPieces()) {
+            if (piece.getPieceType() == PieceType.PAWN && piece.getPieceAlliance() == alliance) {
+                if (piece.getPieceFile() == file) {
                     pawnsInCol.add(piece);
                 }
             }
         }
         return ImmutableList.copyOf(pawnsInCol);
+    }
+
+    public static List<Move> lastNMoves(final Board board, int N) {
+        final List<Move> moveHistory = new ArrayList<>();
+        Move currentMove = board.getTransitionMove();
+        int i = 0;
+        while (currentMove != Move.MoveFactory.getNullMove() && i < N) {
+            moveHistory.add(currentMove);
+            currentMove = currentMove.getBoard().getTransitionMove();
+            i++;
+        }
+        return Collections.unmodifiableList(moveHistory);
     }
 }

@@ -2,6 +2,7 @@ package com.chessAI.gui;
 
 
 import com.chessAI.board.*;
+import com.chessAI.board.FEN.FENParse;
 import com.chessAI.piece.Piece;
 import com.chessAI.player.MoveTransition;
 import com.chessAI.player.ai.MiniMax;
@@ -11,10 +12,7 @@ import com.google.common.collect.Lists;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -129,6 +127,16 @@ public class Table extends Observable {
              }
          });
          fileMenu.add(exitMenuItem);
+
+        final JMenuItem openFEN = new JMenuItem("Board From FEN");
+            openFEN.addActionListener(e -> {
+            String fenString = JOptionPane.showInputDialog("FEN");
+            if(fenString != null) {
+                chessBoard = FENParse.createGameFromFEN(fenString);
+                Table.get().getBoardPanel().drawBoard(chessBoard);
+            }
+        });
+        fileMenu.add(openFEN);
          return fileMenu;
     }
 
@@ -142,6 +150,7 @@ public class Table extends Observable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 boardDirection = boardDirection.opposite();
+                //takenPiecesPanel.
                 boardPanel.drawBoard(chessBoard);
             }
         });
@@ -229,7 +238,7 @@ public class Table extends Observable {
 
             int depth = getDepth();
 
-            final MoveStrategy miniMax = new MiniMax(depth);
+            final MoveStrategy miniMax = new MiniMax(5);
             return miniMax.execute(Table.get().getGameBoard());
         }
 

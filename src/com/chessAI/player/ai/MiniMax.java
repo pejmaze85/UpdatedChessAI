@@ -1,15 +1,21 @@
 package com.chessAI.player.ai;
 
 import com.chessAI.board.Board;
+import com.chessAI.board.BoardUtils;
 import com.chessAI.board.Move;
-import com.chessAI.gui.Table;
 import com.chessAI.player.MoveTransition;
+import com.google.common.collect.ImmutableList;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.chessAI.board.BoardFunctions.willResultInDraw;
 
 public class MiniMax implements MoveStrategy{
 
+    private int quiescenceCount;
+    private static final int MAX_QUIESCENCE = 25000;
     private final BoardEvaluator boardEvaluator;
     private final int searchDepth;
 
@@ -25,23 +31,33 @@ public class MiniMax implements MoveStrategy{
     @Override
     public Move execute(Board board) {
 
-        Move bestMove = getBestMiniMaxMove(board, true);
-
-       /* if(willResultInDraw(bestMove)) {
-            if (Table.get().getGameSetup().isAIPlayer(board.currentPlayer())) {
-                int OFFSET_TO_AVOID_DRAW = 1;
-                int selfScore = StandardBoardEvaluator.getScore(board, board.currentPlayer(), StandardBoardEvaluator.GAMESTATE.UNSURE);
-                int opponentsScore = StandardBoardEvaluator.getScore(board, board.currentPlayer().getOpponent(), StandardBoardEvaluator.GAMESTATE.UNSURE);
-                if ((selfScore + OFFSET_TO_AVOID_DRAW) > opponentsScore) {
-                    bestMove = getBestMiniMaxMove(board, false);
-                }
-            }
-        } */
-
-        return bestMove;
+        return getBestMiniMaxMove(board);
     }
 
-    public Move getBestMiniMaxMove(Board board, boolean best){
+    public List<Move> sortMoves(Collection<Move> moveList){
+        List<Move> sortedList = new ArrayList<>();
+
+        for(Move move : moveList){
+            if(move.isAttack()){
+                sortedList.add(move);
+            }
+        }
+
+        for(Move move : moveList){
+            if (move.isCastlingMove()){
+                sortedList.add(move);
+            }
+        }
+        for(Move move : moveList){
+            if(!move.isAttack() && !move.isCastlingMove()){
+                sortedList.add(move);
+            }
+        }
+
+        return ImmutableList.copyOf(sortedList);
+    }
+
+    public Move getBestMiniMaxMove(Board board){
         final long startTime = System.currentTimeMillis();
 
         Move bestMove = null;
@@ -54,7 +70,7 @@ public class MiniMax implements MoveStrategy{
 
         System.out.println(board.currentPlayer().getAlliance().toString() + " thinking with depth " + this.searchDepth + " through " + numMoves + "moves.");
 
-        for(final Move move : board.currentPlayer().getLegalMoves()){
+        for(final Move move : sortMoves(board.currentPlayer().getLegalMoves())){
 
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
 
@@ -89,14 +105,14 @@ public class MiniMax implements MoveStrategy{
 
         int currentLowest = beta;
 
-        for(final Move move : board.currentPlayer().getLegalMoves()){
+        for(final Move move : sortMoves(board.currentPlayer().getLegalMoves())){
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()){
                 final Board toBoard = moveTransition.getTransistionBoard();
-                final int currentValue = max(toBoard, depth - 1, alpha, currentLowest);
-                currentLowest = Math.min(currentLowest, currentValue);
+                currentLowest = Math.min(currentLowest, max(toBoard,
+                        calculateQuiescenceDepth(toBoard, depth), alpha, currentLowest));
                 if(currentLowest <= alpha){
-                    return alpha;
+                    break;
                 }
             }
         }
@@ -113,14 +129,14 @@ public class MiniMax implements MoveStrategy{
 
         int currentHighest = alpha;
 
-        for(final Move move : board.currentPlayer().getLegalMoves()){
+        for(final Move move : sortMoves(board.currentPlayer().getLegalMoves())){
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()){
                 final Board toBoard = moveTransition.getTransistionBoard();
-                final int currentValue = min(toBoard, depth - 1, currentHighest, beta);
-                currentHighest = Math.max(currentHighest, currentValue);
+                currentHighest = Math.max(currentHighest, min(toBoard,
+                        calculateQuiescenceDepth(toBoard, depth), currentHighest, beta));
                 if (currentHighest >= beta){
-                    return beta;
+                    break;
                 }
             }
         }
@@ -128,8 +144,41 @@ public class MiniMax implements MoveStrategy{
         return currentHighest;
     }
 
+    private int calculateQuiescenceDepth(final Board toBoard,
+                                         final int depth) {
+        if(depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
+            int activityMeasure = 0;
+            if (toBoard.currentPlayer().isInCheck()) {
+                activityMeasure += 1;
+            }
+            for(final Move move: BoardUtils.lastNMoves(toBoard, 2)) {
+                if(move.isAttack()) {
+                    activityMeasure += 1;
+                }
+            }
+            if(activityMeasure >= 2) {
+                this.quiescenceCount++;
+                return 2;
+            }
+        }
+        return depth - 1;
+    }
+
     private boolean endGame(Board board) {
         return board.currentPlayer().isInCheckMate() || board.currentPlayer().isInStaleMate() || board.currentPlayer().isThreeFold() ;
     }
 
 }
+
+
+
+       /* if(willResultInDraw(bestMove)) {
+            if (Table.get().getGameSetup().isAIPlayer(board.currentPlayer())) {
+                int OFFSET_TO_AVOID_DRAW = 1;
+                int selfScore = StandardBoardEvaluator.getScore(board, board.currentPlayer(), StandardBoardEvaluator.GAMESTATE.UNSURE);
+                int opponentsScore = StandardBoardEvaluator.getScore(board, board.currentPlayer().getOpponent(), StandardBoardEvaluator.GAMESTATE.UNSURE);
+                if ((selfScore + OFFSET_TO_AVOID_DRAW) > opponentsScore) {
+                    bestMove = getBestMiniMaxMove(board, false);
+                }
+            }
+        } */

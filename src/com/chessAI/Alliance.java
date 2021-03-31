@@ -48,7 +48,7 @@ public enum Alliance {
 
         @Override
         public int pawnEndgameBonus(final int position){
-            return W_PAWN_BONUS_ENDGAME_TILES[position];
+            return W_PAWN_BONUS_TILES[position];
         }
 
         @Override
@@ -117,7 +117,7 @@ public enum Alliance {
 
         @Override
         public int pawnEndgameBonus(final int position){
-            return B_PAWN_BONUS_ENDGAME_TILES[position];
+            return B_PAWN_BONUS_TILES[position];
         }
 
         @Override
@@ -335,11 +335,12 @@ public enum Alliance {
             -0,-0,-0,-0,-0,-0,-0,-0,
             -0,-0,  0,  0,  0,  0,-0,-0,
             -0,  0, 50, 50, 50, 50,  0,-0,
-            -0,  0, 50, 100, 100, 50,  0,-0,
-            -0,  0, 50, 100, 100, 50,  0,-0,
+            -0,  0, 50, 50, 50, 50,  0,-0,
+            -0,  0, 50, 50, 50, 50,  0,-0,
             -0,  0, 50, 50, 50, 50,  0,-0,
             -0,-0,  0,  0,  0,  0,-0,-0,
             -0,-0,-0,-0,-0,-0,-0,-0,
     };
+
 
 }

@@ -66,14 +66,15 @@ public class Queen extends Piece{
     }
 
     @Override
-    public int locationBonus() {
+    public int getOGLocationBonus() {
         return this.pieceAlliance.queenBonus(this.piecePosition);
     }
 
     @Override
-    public int endgameLocationBonus() {
-        return 0;
-    }
+    public int getMGLocationBonus() { return this.pieceAlliance.queenBonus(this.piecePosition); }
+
+    @Override
+    public int getEGLocationBonus() { return this.pieceAlliance.queenBonus(this.piecePosition); }
 
     @Override
     public boolean isPassedPawn() {
@@ -87,7 +88,7 @@ public class Queen extends Piece{
 
     @Override
     public Queen movePiece(final Move move) {
-        return new Queen(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate());
+        return new Queen(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate(), false);
     }
 
     @Override

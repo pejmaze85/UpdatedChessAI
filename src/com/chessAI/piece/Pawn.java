@@ -110,18 +110,21 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public int locationBonus() {
+    public int getOGLocationBonus() {
         return this.pieceAlliance.pawnBonus(this.piecePosition);
     }
 
     @Override
-    public int endgameLocationBonus() {
+    public int getMGLocationBonus() {return this.pieceAlliance.pawnBonus(this.piecePosition); }
+
+    @Override
+    public int getEGLocationBonus() {
         return this.pieceAlliance.pawnEndgameBonus(this.piecePosition);
     }
 
     @Override
     public Pawn movePiece(final Move move) {
-        return new Pawn(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate());
+        return new Pawn(move.getMovePiece().getPieceAlliance(), move.getDestinationCoordinate(), false);
     }
 
     @Override
