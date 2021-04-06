@@ -77,7 +77,6 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     }
 
     public static int getScore(final Board board, final Player player, GAMESTATE gamestate){
-        gamestate = getGameState(board);
         return scorePlayer(board, player, 5, gamestate);
     }
 

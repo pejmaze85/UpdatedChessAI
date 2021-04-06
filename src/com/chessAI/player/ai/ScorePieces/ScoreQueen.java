@@ -16,7 +16,7 @@ public class ScoreQueen {
 
         if(getGameState(board) == GAMESTATE.OPENING){
             if(piece.isFirstMove()){                // MAS'UH NO BRING THE QUEEN OUT TOO EARLY
-                score += 50;
+                score += 100;
             }
         }
 

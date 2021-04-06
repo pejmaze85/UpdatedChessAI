@@ -57,6 +57,20 @@ public class Board {
         return builder.toString();
     }
 
+    public int computeHashCode(){
+        int hash = 31;
+        for (Piece piece: this.getAllPieces()){
+            hash = 31 * hash + piece.computeHashCode();
+        }
+        hash = 31 * hash + this.currentPlayer.hashCode();
+        if(this.getEnPassantPawn() != null) {
+            hash = 31 * hash + this.getEnPassantPawn().hashCode();
+        }
+        hash = 31 * hash + this.whitePlayer.getPlayerKing().hashCode();
+        hash = 31 * hash + this.blackPlayer.getPlayerKing().hashCode();
+        return hash;
+    }
+
     public Pawn getEnPassantPawn(){
         return this.enPassantPawn;
     }

@@ -4,6 +4,7 @@ import com.chessAI.board.Board;
 import com.chessAI.board.BoardUtils;
 import com.chessAI.board.Move;
 import com.chessAI.player.MoveTransition;
+import com.chessAI.player.ai.TranspositionTable.entry;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -18,6 +19,9 @@ public class MiniMax implements MoveStrategy{
     private static final int MAX_QUIESCENCE = 25000;
     private final BoardEvaluator boardEvaluator;
     private final int searchDepth;
+    private int moveCount;
+    private int hashCount;
+    private TranspositionTable tt = new TranspositionTable();
 
     public MiniMax(final int searchDepth){
         this.boardEvaluator = new StandardBoardEvaluator();
@@ -62,6 +66,7 @@ public class MiniMax implements MoveStrategy{
 
         Move bestMove = null;
 
+        TranspositionTable tt = new TranspositionTable();
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;
@@ -71,7 +76,8 @@ public class MiniMax implements MoveStrategy{
         System.out.println(board.currentPlayer().getAlliance().toString() + " thinking with depth " + this.searchDepth + " through " + numMoves + "moves.");
 
         for(final Move move : sortMoves(board.currentPlayer().getLegalMoves())){
-
+            moveCount ++;
+            System.out.println("Working On Move Number " + moveCount + "/" + numMoves);
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
 
             if(moveTransition.getMoveStatus().isDone()){
@@ -88,11 +94,13 @@ public class MiniMax implements MoveStrategy{
                     bestMove = move;
                 }
             }
+            System.out.println("Current Best Move Is: " + bestMove);
         }
 
         final long executionTime = System.currentTimeMillis() - startTime;
 
         System.out.println("Search Took " + TimeUnit.MILLISECONDS.toSeconds(executionTime) + " Seconds");
+        System.out.println("Total hashes found: " + hashCount);
 
             return bestMove;
 
@@ -109,11 +117,23 @@ public class MiniMax implements MoveStrategy{
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()){
                 final Board toBoard = moveTransition.getTransistionBoard();
-                currentLowest = Math.min(currentLowest, max(toBoard,
-                        calculateQuiescenceDepth(toBoard, depth), alpha, currentLowest));
-                if(currentLowest <= alpha){
-                    break;
-                }
+                //int boardHash = board.computeHashCode();
+                 //if(tt.tableList.containsKey(boardHash) && tt.tableList.get(boardHash).getDepth() == depth){
+                 //    hashCount ++;
+                 //    return tt.tableList.get(boardHash).getScore();
+                 //}else {
+
+                     currentLowest = Math.min(currentLowest, max(toBoard,
+                             calculateQuiescenceDepth(toBoard, depth), alpha, currentLowest));
+
+                     if (currentLowest <= alpha) {
+                 //        entry newEntry = new entry(currentLowest, depth);
+                 //        tt.tableList.put(boardHash,newEntry);
+                         break;
+                     }
+                 //    entry newEntry = new entry(currentLowest, depth);
+                 //    tt.tableList.put(boardHash,newEntry);
+                 //}
             }
         }
 
@@ -133,11 +153,22 @@ public class MiniMax implements MoveStrategy{
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()){
                 final Board toBoard = moveTransition.getTransistionBoard();
-                currentHighest = Math.max(currentHighest, min(toBoard,
-                        calculateQuiescenceDepth(toBoard, depth), currentHighest, beta));
-                if (currentHighest >= beta){
-                    break;
-                }
+                //int boardHash = toBoard.computeHashCode();
+                //if(tt.tableList.containsKey(boardHash) && tt.tableList.get(boardHash).getDepth() == depth){
+                //    hashCount ++;
+                //    return tt.tableList.get(boardHash).getScore();
+                //}else {
+
+                    currentHighest = Math.max(currentHighest, min(toBoard,
+                            calculateQuiescenceDepth(toBoard, depth), currentHighest, beta));
+                    if (currentHighest >= beta) {
+                       // entry newEntry = new entry( currentHighest, depth);
+                       // tt.tableList.put(boardHash,newEntry);
+                        break;
+                    }
+                   // entry newEntry = new entry( currentHighest, depth);
+                   // tt.tableList.put(boardHash,newEntry);
+                //}
             }
         }
 

@@ -15,4 +15,11 @@ public class BoardFunctions {
         return false;
         }
     }
+
+    public static boolean endGame(Board board) {
+        return board.currentPlayer().isInCheckMate() || board.currentPlayer().isInStaleMate() || board.currentPlayer().isThreeFold() ;
+    }
+
 }
+
+

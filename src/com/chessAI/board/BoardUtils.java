@@ -4,6 +4,7 @@ import com.chessAI.Alliance;
 import com.chessAI.gui.Table;
 import com.chessAI.piece.King;
 import com.chessAI.piece.Piece;
+import com.chessAI.player.MoveTransition;
 import com.google.common.collect.ImmutableList;
 
 import java.util.*;
@@ -128,4 +129,5 @@ public class BoardUtils {
         }
         return Collections.unmodifiableList(moveHistory);
     }
+
 }

@@ -332,11 +332,6 @@ public class Table extends Observable {
         int totalScore = whiteScore + blackScore;
         double whitePercent = (double) whiteScore/ (double) totalScore;
         double blackPercent = (double)blackScore/ (double) totalScore;
-
-        System.out.println("White Score: " + whiteScore);
-        System.out.println("Black Score: " + blackScore);
-        System.out.println("W: " + String.format("%.2f", whitePercent) + " - " + String.format("%.2f", blackPercent) + " : B");
-        System.out.println("-----------------------");
     }
 
     private void updateGameBoard(final Board transistionBoard) {

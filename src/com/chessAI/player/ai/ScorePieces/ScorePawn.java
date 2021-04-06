@@ -118,7 +118,6 @@ public class ScorePawn {
 
         }
 
-
         return score;
     }
 

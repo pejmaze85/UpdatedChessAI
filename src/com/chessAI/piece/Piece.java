@@ -27,7 +27,7 @@ public abstract class Piece {
 
     }
 
-    private int computeHashCode() {
+    public int computeHashCode() {
         int result = pieceType.hashCode();
         result = 31 * result + pieceAlliance.hashCode();
         result = 31 * result + piecePosition;
