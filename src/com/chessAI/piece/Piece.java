@@ -31,7 +31,10 @@ public abstract class Piece {
         int result = pieceType.hashCode();
         result = 31 * result + pieceAlliance.hashCode();
         result = 31 * result + piecePosition;
-        result = 31 * result + (isFirstMove ? 1 : 0);
+
+        if(this.getPieceType() == PieceType.ROOK || this.getPieceType() == PieceType.KING) {
+            result = 31 * result + (isFirstMove ? 1 : 0);
+        }
 
         return result;
     }

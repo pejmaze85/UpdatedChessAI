@@ -66,8 +66,6 @@ public class Board {
         if(this.getEnPassantPawn() != null) {
             hash = 31 * hash + this.getEnPassantPawn().hashCode();
         }
-        hash = 31 * hash + this.whitePlayer.getPlayerKing().hashCode();
-        hash = 31 * hash + this.blackPlayer.getPlayerKing().hashCode();
         return hash;
     }
 

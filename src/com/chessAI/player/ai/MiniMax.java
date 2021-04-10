@@ -117,23 +117,23 @@ public class MiniMax implements MoveStrategy{
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()){
                 final Board toBoard = moveTransition.getTransistionBoard();
-                //int boardHash = board.computeHashCode();
-                 //if(tt.tableList.containsKey(boardHash) && tt.tableList.get(boardHash).getDepth() == depth){
-                 //    hashCount ++;
-                 //    return tt.tableList.get(boardHash).getScore();
-                 //}else {
+                int boardHash = toBoard.computeHashCode();
+                 if(tt.tableList.containsKey(boardHash)){// && tt.tableList.get(boardHash).getDepth() == depth){
+                     hashCount ++;
+                     System.out.println(tt.tableList.get(boardHash).board);
+                     System.out.println(toBoard);
+                     return tt.tableList.get(boardHash).getScore();
+                 }else {
 
                      currentLowest = Math.min(currentLowest, max(toBoard,
                              calculateQuiescenceDepth(toBoard, depth), alpha, currentLowest));
-
+                     entry newEntry = new entry(currentLowest, depth, toBoard);
+                     tt.tableList.put(boardHash,newEntry);
                      if (currentLowest <= alpha) {
-                 //        entry newEntry = new entry(currentLowest, depth);
-                 //        tt.tableList.put(boardHash,newEntry);
+
                          break;
                      }
-                 //    entry newEntry = new entry(currentLowest, depth);
-                 //    tt.tableList.put(boardHash,newEntry);
-                 //}
+                 }
             }
         }
 
@@ -153,25 +153,23 @@ public class MiniMax implements MoveStrategy{
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()){
                 final Board toBoard = moveTransition.getTransistionBoard();
-                //int boardHash = toBoard.computeHashCode();
-                //if(tt.tableList.containsKey(boardHash) && tt.tableList.get(boardHash).getDepth() == depth){
-                //    hashCount ++;
-                //    return tt.tableList.get(boardHash).getScore();
-                //}else {
+                int boardHash = toBoard.computeHashCode();
+                if(tt.tableList.containsKey(boardHash)){ //&& tt.tableList.get(boardHash).getDepth() == depth){
+                    hashCount ++;
+                    return tt.tableList.get(boardHash).getScore();
+                }else {
 
                     currentHighest = Math.max(currentHighest, min(toBoard,
                             calculateQuiescenceDepth(toBoard, depth), currentHighest, beta));
+                    entry newEntry = new entry( currentHighest, depth, toBoard);
+                    tt.tableList.put(boardHash,newEntry);
                     if (currentHighest >= beta) {
-                       // entry newEntry = new entry( currentHighest, depth);
-                       // tt.tableList.put(boardHash,newEntry);
+
                         break;
                     }
-                   // entry newEntry = new entry( currentHighest, depth);
-                   // tt.tableList.put(boardHash,newEntry);
-                //}
+                }
             }
         }
-
         return currentHighest;
     }
 

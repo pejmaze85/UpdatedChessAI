@@ -14,7 +14,6 @@ import static com.chessAI.player.ai.StandardBoardEvaluator.getGameState;
 
 public class ScorePawn {
 
-
     private static int PAWNPROMOTE_BONUS = 100;
     private final static int PASSED_PAWN_BONUS = 100;
 

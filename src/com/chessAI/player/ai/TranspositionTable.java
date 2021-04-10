@@ -16,10 +16,12 @@ public class TranspositionTable {
     public static class entry{
         int score;
         int depth;
+        Board board;
 
-        entry(int score, int depth){
+        entry(int score, int depth, Board board){
             this.depth = depth;
             this.score = score;
+            this.board = board;
         }
 
 
