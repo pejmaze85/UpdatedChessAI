@@ -151,7 +151,7 @@ public abstract class Piece {
 
     public enum PieceType{
 
-        PAWN("P", 100, 100, 150){
+        PAWN("P", 100, 100, 150, 0){
             @Override
             public boolean isKing() {
                 return false;
@@ -162,7 +162,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        KNIGHT("N", 305, 300, 320){
+        KNIGHT("N", 305, 320, 320, 1){
             @Override
             public boolean isKing() {
                 return false;
@@ -172,7 +172,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        BISHOP("B", 333, 370, 400){
+        BISHOP("B", 333, 370, 400, 2){
             @Override
             public boolean isKing() {
                 return false;
@@ -182,7 +182,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        ROOK("R", 563, 620, 660){
+        ROOK("R", 563, 620, 660, 3){
             @Override
             public boolean isKing() {
                 return false;
@@ -192,7 +192,7 @@ public abstract class Piece {
                 return true;
             }
         },
-        QUEEN("Q", 950, 1100, 1200){
+        QUEEN("Q", 950, 1100, 1200, 4){
             @Override
             public boolean isKing() {
                 return false;
@@ -202,7 +202,7 @@ public abstract class Piece {
                 return false;
             }
         },
-        KING("K", 10000, 10000, 10000){
+        KING("K", 10000, 10000, 10000, 5){
             @Override
             public boolean isKing() {
                 return true;
@@ -217,12 +217,14 @@ public abstract class Piece {
         private int ogValue;
         private int mgValue;
         private int egValue;
+        private int tableVal;
 
-        PieceType(final String pieceName, final int ogValue, final int mgValue, final int egValue){
+        PieceType(final String pieceName, final int ogValue, final int mgValue, final int egValue, final int tableVal){
             this.pieceName = pieceName;
             this.ogValue = ogValue;
             this.mgValue = mgValue;
             this.egValue = egValue;
+            this.tableVal = tableVal;
         }
 
         @Override
@@ -237,6 +239,7 @@ public abstract class Piece {
         public int getEgValue(){
             return this.egValue;
         }
+        public int getTableVal() { return this.tableVal; }
         public abstract boolean isKing();
         public abstract boolean isRook();
     }

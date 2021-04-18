@@ -72,7 +72,7 @@ public abstract class Player {
 
     public boolean isThreeFold(){
             int numberOfTimes = Collections.frequency(Table.get().getBoardHistory().getBoardList(), board.toString());
-           if(numberOfTimes == 3){
+           if(numberOfTimes == 100){
                System.out.println("THREEFOLD REPETITION - DRAW");
                return true;
            }else{

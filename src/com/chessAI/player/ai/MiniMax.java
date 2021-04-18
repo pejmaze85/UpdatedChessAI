@@ -3,6 +3,7 @@ package com.chessAI.player.ai;
 import com.chessAI.board.Board;
 import com.chessAI.board.BoardUtils;
 import com.chessAI.board.Move;
+import com.chessAI.gui.Table;
 import com.chessAI.player.MoveTransition;
 import com.chessAI.player.ai.TranspositionTable.entry;
 import com.google.common.collect.ImmutableList;
@@ -21,11 +22,13 @@ public class MiniMax implements MoveStrategy{
     private final int searchDepth;
     private int moveCount;
     private int hashCount;
-    private TranspositionTable tt = new TranspositionTable();
+    //private final TranspositionTable tt = new TranspositionTable();
+    //private final PremoveTable table = new PremoveTable();
 
     public MiniMax(final int searchDepth){
         this.boardEvaluator = new StandardBoardEvaluator();
         this.searchDepth = searchDepth;
+
     }
 
     @Override public String toString(){
@@ -34,7 +37,6 @@ public class MiniMax implements MoveStrategy{
 
     @Override
     public Move execute(Board board) {
-
         return getBestMiniMaxMove(board);
     }
 
@@ -58,6 +60,8 @@ public class MiniMax implements MoveStrategy{
             }
         }
 
+
+
         return ImmutableList.copyOf(sortedList);
     }
 
@@ -66,7 +70,8 @@ public class MiniMax implements MoveStrategy{
 
         Move bestMove = null;
 
-        TranspositionTable tt = new TranspositionTable();
+        //String nextMove = table.getNextMove(Table.get().moveLog);
+
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;
@@ -82,8 +87,8 @@ public class MiniMax implements MoveStrategy{
 
             if(moveTransition.getMoveStatus().isDone()){
                 currentValue = board.currentPlayer().getAlliance().isWhite() ?
-                        min(moveTransition.getTransistionBoard(), this.searchDepth - 1, Integer.MIN_VALUE,Integer.MAX_VALUE) :
-                        max(moveTransition.getTransistionBoard(), this.searchDepth - 1, Integer.MIN_VALUE,Integer.MAX_VALUE);
+                        min(moveTransition.getTransitionBoard(), this.searchDepth - 1, Integer.MIN_VALUE,Integer.MAX_VALUE) :
+                        max(moveTransition.getTransitionBoard(), this.searchDepth - 1, Integer.MIN_VALUE,Integer.MAX_VALUE);
 
                 if(board.currentPlayer().getAlliance().isWhite() && currentValue >= highestSeenValue){
                     highestSeenValue = currentValue;
@@ -107,6 +112,7 @@ public class MiniMax implements MoveStrategy{
     }
 
     public int min(final Board board, final int depth, int alpha, int beta){
+
         if (depth == 0  || endGame(board)){
             return this.boardEvaluator.evaluate(board, depth);
         }
@@ -116,26 +122,25 @@ public class MiniMax implements MoveStrategy{
         for(final Move move : sortMoves(board.currentPlayer().getLegalMoves())){
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()){
-                final Board toBoard = moveTransition.getTransistionBoard();
-                int boardHash = toBoard.computeHashCode();
-                 if(tt.tableList.containsKey(boardHash)){// && tt.tableList.get(boardHash).getDepth() == depth){
-                     hashCount ++;
-                     System.out.println(tt.tableList.get(boardHash).board);
-                     System.out.println(toBoard);
-                     return tt.tableList.get(boardHash).getScore();
-                 }else {
+                final Board toBoard = moveTransition.getTransitionBoard();
+                //long boardHash = toBoard.computeHashCode();
+                 //if(tt.tableList.containsKey(boardHash) && tt.tableList.get(boardHash).getDepth() >= depth){
+                 //        hashCount ++;
+                 //        currentLowest = tt.tableList.get(boardHash).beta;
+                 //}else {
 
                      currentLowest = Math.min(currentLowest, max(toBoard,
                              calculateQuiescenceDepth(toBoard, depth), alpha, currentLowest));
-                     entry newEntry = new entry(currentLowest, depth, toBoard);
-                     tt.tableList.put(boardHash,newEntry);
+                 //    entry newEntry = new entry(currentLowest, depth, alpha, beta);
+                 //    tt.tableList.put(boardHash, newEntry);
+                 //}
                      if (currentLowest <= alpha) {
 
                          break;
                      }
                  }
             }
-        }
+
 
         return currentLowest;
 
@@ -143,6 +148,7 @@ public class MiniMax implements MoveStrategy{
 
 
     public int max(final Board board, final int depth, int alpha, int beta){
+
         if (depth == 0 || endGame(board)){
             return this.boardEvaluator.evaluate(board, depth);
         }
@@ -152,24 +158,24 @@ public class MiniMax implements MoveStrategy{
         for(final Move move : sortMoves(board.currentPlayer().getLegalMoves())){
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()){
-                final Board toBoard = moveTransition.getTransistionBoard();
-                int boardHash = toBoard.computeHashCode();
-                if(tt.tableList.containsKey(boardHash)){ //&& tt.tableList.get(boardHash).getDepth() == depth){
-                    hashCount ++;
-                    return tt.tableList.get(boardHash).getScore();
-                }else {
-
+                final Board toBoard = moveTransition.getTransitionBoard();
+                //long boardHash = toBoard.computeHashCode();
+                //if(tt.tableList.containsKey(boardHash)  && tt.tableList.get(boardHash).getDepth() >= depth){ //&& tt.tableList.get(boardHash).getDepth() == depth){
+                //        hashCount ++;
+                //        currentHighest = tt.tableList.get(boardHash).beta;
+                //}else {
                     currentHighest = Math.max(currentHighest, min(toBoard,
                             calculateQuiescenceDepth(toBoard, depth), currentHighest, beta));
-                    entry newEntry = new entry( currentHighest, depth, toBoard);
-                    tt.tableList.put(boardHash,newEntry);
+                //    entry newEntry = new entry(currentHighest, depth, alpha, beta);
+                //    tt.tableList.put(boardHash, newEntry);
+                //}
                     if (currentHighest >= beta) {
 
                         break;
                     }
                 }
             }
-        }
+
         return currentHighest;
     }
 

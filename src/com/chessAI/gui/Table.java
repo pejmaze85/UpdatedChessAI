@@ -31,10 +31,11 @@ public class Table extends Observable {
     private final GameHistoryPanel gameHistoryPanel;
     private final TakenPiecesPanel takenPiecesPanel;
     private final BoardPanel boardPanel;
-    private final MoveLog moveLog;
+    public final MoveLog moveLog;
     private final BoardHistory boardHistoryLog;
     private final GameSetup gameSetup;
     public final DebugWindow debugWindow;
+    public static Zobrist zobry;
 
     public Move lastMove;
 
@@ -81,6 +82,8 @@ public class Table extends Observable {
         this.getBoardHistory().addToMoveList(this.chessBoard);
         this.addObserver(new TableGameAIWatcher());
         this.boardDirection = BoardDirection.NORMAL;
+        this.zobry = new Zobrist();
+
 
         gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
         gameFrame.add(this.boardPanel, BorderLayout.CENTER);
@@ -93,6 +96,8 @@ public class Table extends Observable {
     public static Table get(){
         return INSTANCE;
     }
+
+    public static Zobrist getZorby(){ return zobry; }
 
     public BoardHistory getBoardHistory(){
         return this.boardHistoryLog;
@@ -136,6 +141,14 @@ public class Table extends Observable {
                 Table.get().getBoardPanel().drawBoard(chessBoard);
             }
         });
+        final JMenuItem showHash = new JMenuItem("Show Hash");
+        showHash.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(Table.get().getGameBoard().computeHashCode());
+            }
+        });
+        fileMenu.add(showHash);
         fileMenu.add(openFEN);
          return fileMenu;
     }
@@ -248,7 +261,7 @@ public class Table extends Observable {
             try {
                 final Move bestmove = get();
                 Table.get().lastMove = bestmove;
-                Table.get().updateGameBoard(Table.get().getGameBoard().currentPlayer().makeMove(bestmove).getTransistionBoard());
+                Table.get().updateGameBoard(Table.get().getGameBoard().currentPlayer().makeMove(bestmove).getTransitionBoard());
                 Table.get().getMoveLog().addMove(bestmove);
                 Table.get().boardHistoryLog.addToBoardList(Table.get().getGameBoard().toString());
                 Table.get().boardHistoryLog.addToMoveList(Table.get().getGameBoard());
@@ -521,7 +534,7 @@ public class Table extends Observable {
                                 destinationTile.getTileCoordinate());
                         final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
                         if (transition.getMoveStatus().isDone()){
-                            chessBoard = transition.getTransistionBoard();
+                            chessBoard = transition.getTransitionBoard();
                             Table.get().boardHistoryLog.addToBoardList(chessBoard.toString());
                             Table.get().boardHistoryLog.addToMoveList(chessBoard);
                             StandardBoardEvaluator.debugScorePlayer(chessBoard);

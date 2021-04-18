@@ -6,7 +6,7 @@ import java.util.Collections;
 
 public class BoardFunctions {
     public static boolean willResultInDraw(Move move){
-        Board testBoard = Table.get().getGameBoard().currentPlayer().makeMove(move).getTransistionBoard();
+        Board testBoard = Table.get().getGameBoard().currentPlayer().makeMove(move).getTransitionBoard();
         int numberOfTimes = Collections.frequency(Table.get().getBoardHistory().getBoardList(), testBoard.toString());
         if(numberOfTimes == 2){
             System.out.println("THREEFOLD REPETITION - DRAW");

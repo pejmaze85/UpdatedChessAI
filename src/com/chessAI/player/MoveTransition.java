@@ -5,12 +5,12 @@ import com.chessAI.board.Move;
 
 public class MoveTransition {
 
-    private Board transistionBoard;
+    private final Board transitionBoard;
     private final Move move;
     private final MoveStatus moveStatus;
 
-    public MoveTransition(final Board transistionBoard, final Move move, final MoveStatus moveStatus){
-        this.transistionBoard = transistionBoard;
+    public MoveTransition(final Board transitionBoard, final Move move, final MoveStatus moveStatus){
+        this.transitionBoard = transitionBoard;
         this.move = move;
         this.moveStatus = moveStatus;
     }
@@ -19,7 +19,7 @@ public class MoveTransition {
         return this.moveStatus;
     }
 
-    public Board getTransistionBoard() {
-        return this.transistionBoard;
+    public Board getTransitionBoard() {
+        return this.transitionBoard;
     }
 }

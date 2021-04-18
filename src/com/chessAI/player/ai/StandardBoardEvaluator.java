@@ -17,13 +17,13 @@ import static com.chessAI.player.ai.ScorePieces.ScoreRook.*;
 
 public final class StandardBoardEvaluator implements BoardEvaluator {
 
-    private final static int CHECK_BONUS = 45;
+    private final static int CHECK_BONUS = 30;
     private final static int MOBILITY_MULTIPLIER = 5;
     private final static int CHECK_MATE_BONUS = 10000;
     private final static int DEPTH_BONUS = 100;
     private final static int CASTLE_BONUS = 60;
     private static final int ACTIVE_PIECE_BONUS = 10;
-    private static final int TWO_ROOK_BONUS = 50;
+    private static final int TWO_ROOK_BONUS = 25;
     private static int PAWNPROMOTE_BONUS = 100;
     private final static int TWO_BISHOP_BONUS = 50;
     private final static int ATTACK_MULTIPLIER = 2;
@@ -112,7 +112,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
                     attackScore++;
                 }
                 if(move.getAttackedPiece().getPieceType() == Piece.PieceType.QUEEN){
-                    attackScore += 20;
+                    attackScore += 5;
                 }
             }
         }

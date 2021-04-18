@@ -1,6 +1,5 @@
 package com.chessAI.player;
 
-import com.chessAI.board.Move;
 
 public enum MoveStatus {
     DONE {

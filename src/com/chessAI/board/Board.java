@@ -1,6 +1,7 @@
 package com.chessAI.board;
 
 import com.chessAI.Alliance;
+import com.chessAI.gui.Table;
 import com.chessAI.piece.*;
 import com.chessAI.player.BlackPlayer;
 import com.chessAI.player.Player;
@@ -57,15 +58,44 @@ public class Board {
         return builder.toString();
     }
 
-    public int computeHashCode(){
-        int hash = 31;
-        for (Piece piece: this.getAllPieces()){
-            hash = 31 * hash + piece.computeHashCode();
+    public long computeHashCode(){
+        long hash = 0;
+        Zobrist zorby = Table.getZorby();
+
+        for(int i = 0; i < 64; i++){
+            if(this.getTile(i).isTileOccupied()) {
+                Piece piece = this.getTile(i).getPiece();
+                if(piece.getPieceAlliance() == Alliance.WHITE){
+                    hash ^= zorby.pieceMap[i][this.getTile(i).getPiece().getPieceType().getTableVal()];
+                }else{
+                    hash ^= zorby.pieceMap[i][this.getTile(i).getPiece().getPieceType().getTableVal() + 6];
+                }
+            }
         }
-        hash = 31 * hash + this.currentPlayer.hashCode();
+
+        if(this.currentPlayer.getAlliance().isWhite()) {
+            hash ^= zorby.pieceMap[0][13];
+        }else{
+            hash ^= zorby.pieceMap[1][13];
+        }
+
         if(this.getEnPassantPawn() != null) {
-            hash = 31 * hash + this.getEnPassantPawn().hashCode();
+           hash ^= zorby.pieceMap[this.enPassantPawn.getPiecePosition()][14];
         }
+
+        if(whitePlayer.getPlayerKing().isKingSideCastleCapable()){
+            hash ^= zorby.pieceMap[0][15];
+        }
+        if(whitePlayer.getPlayerKing().isQueenSideCastleCapable()){
+             hash ^= zorby.pieceMap[1][15];
+        }
+        if(blackPlayer.getPlayerKing().isKingSideCastleCapable()){
+             hash ^= zorby.pieceMap[2][15];
+        }
+        if(blackPlayer.getPlayerKing().isQueenSideCastleCapable()){
+             hash ^= zorby.pieceMap[3][15];
+        }
+
         return hash;
     }
 

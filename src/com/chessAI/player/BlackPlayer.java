@@ -29,6 +29,11 @@ public class BlackPlayer extends Player {
     }
 
     @Override
+    public int hashCode() {
+        return 2;
+    }
+
+    @Override
     public Alliance getAlliance() {
         return Alliance.BLACK;
     }
