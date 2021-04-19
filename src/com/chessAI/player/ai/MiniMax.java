@@ -22,7 +22,7 @@ public class MiniMax implements MoveStrategy{
     private final int searchDepth;
     private int moveCount;
     private int hashCount;
-    //private final TranspositionTable tt = new TranspositionTable();
+    private final TranspositionTable tt = new TranspositionTable();
     //private final PremoveTable table = new PremoveTable();
 
     public MiniMax(final int searchDepth){
@@ -82,7 +82,7 @@ public class MiniMax implements MoveStrategy{
 
         for(final Move move : sortMoves(board.currentPlayer().getLegalMoves())){
             moveCount ++;
-            System.out.println("Working On Move Number " + moveCount + "/" + numMoves);
+            System.out.println("Working On Move Number " + moveCount + "/" + numMoves + " - " + move.toString());
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
 
             if(moveTransition.getMoveStatus().isDone()){
@@ -123,17 +123,17 @@ public class MiniMax implements MoveStrategy{
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()){
                 final Board toBoard = moveTransition.getTransitionBoard();
-                //long boardHash = toBoard.computeHashCode();
-                 //if(tt.tableList.containsKey(boardHash) && tt.tableList.get(boardHash).getDepth() >= depth){
-                 //        hashCount ++;
-                 //        currentLowest = tt.tableList.get(boardHash).beta;
-                 //}else {
+                long boardHash = toBoard.computeHashCode();
+                 if(tt.tableList.containsKey(boardHash) && tt.tableList.get(boardHash).getDepth() >= depth){
+                         hashCount ++;
+                         return tt.tableList.get(boardHash).getScore();
+                 }else {
 
                      currentLowest = Math.min(currentLowest, max(toBoard,
                              calculateQuiescenceDepth(toBoard, depth), alpha, currentLowest));
-                 //    entry newEntry = new entry(currentLowest, depth, alpha, beta);
-                 //    tt.tableList.put(boardHash, newEntry);
-                 //}
+                     entry newEntry = new entry(currentLowest, depth, alpha, beta);
+                     tt.tableList.put(boardHash, newEntry);
+                 }
                      if (currentLowest <= alpha) {
 
                          break;
@@ -159,16 +159,16 @@ public class MiniMax implements MoveStrategy{
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()){
                 final Board toBoard = moveTransition.getTransitionBoard();
-                //long boardHash = toBoard.computeHashCode();
-                //if(tt.tableList.containsKey(boardHash)  && tt.tableList.get(boardHash).getDepth() >= depth){ //&& tt.tableList.get(boardHash).getDepth() == depth){
-                //        hashCount ++;
-                //        currentHighest = tt.tableList.get(boardHash).beta;
-                //}else {
+                long boardHash = toBoard.computeHashCode();
+                if(tt.tableList.containsKey(boardHash)  && tt.tableList.get(boardHash).getDepth() >= depth){ //&& tt.tableList.get(boardHash).getDepth() == depth){
+                        hashCount ++;
+                        return tt.tableList.get(boardHash).getScore();
+                }else {
                     currentHighest = Math.max(currentHighest, min(toBoard,
                             calculateQuiescenceDepth(toBoard, depth), currentHighest, beta));
-                //    entry newEntry = new entry(currentHighest, depth, alpha, beta);
-                //    tt.tableList.put(boardHash, newEntry);
-                //}
+                    entry newEntry = new entry(currentHighest, depth, alpha, beta);
+                    tt.tableList.put(boardHash, newEntry);
+                }
                     if (currentHighest >= beta) {
 
                         break;
@@ -193,9 +193,11 @@ public class MiniMax implements MoveStrategy{
             }
             if(activityMeasure >= 2) {
                 this.quiescenceCount++;
+                //System.out.println(activityMeasure);
                 return 2;
             }
         }
+        //System.out.println(depth - 1);
         return depth - 1;
     }
 

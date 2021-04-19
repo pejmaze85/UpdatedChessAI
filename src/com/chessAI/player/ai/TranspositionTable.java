@@ -19,14 +19,12 @@ public class TranspositionTable {
         int depth;
         int alpha;
         int beta;
-        int flag;
 
         entry(int score, int depth, int alpha, int beta){
             this.alpha = alpha;
             this.beta = beta;
             this.depth = depth;
             this.score = score;
-            this.flag = flag;
         }
 
 
